@@ -19,7 +19,7 @@ class Test(Flox):
         for _ in range(250):
             self.add_item(
                 title=self.args,
-                subtitle=str(Flox.__bases__[0].__name__)
+                subtitle=str(_)
             )
 
     # _context will run when the context menu is activated
@@ -32,3 +32,4 @@ class Test(Flox):
 
 if __name__ == "__main__":
     Test()
+```
