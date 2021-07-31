@@ -6,6 +6,10 @@ Flox adds many useful methods to speed up plugin devolpment
 
 ## Installation
 
+### PIP install from github
+
+`pip install git+https://github.com/garulf/flox.git`
+
 Flox should be installed in the plugins root directory like so:
 
 ```
