@@ -33,3 +33,44 @@ class Test(Flox):
 if __name__ == "__main__":
     Test()
 ```
+
+Flox should be installed in the plugins root directory like so:
+
+```
+Plugin/
+    plugin.json
+    yourplugin.py
+    flox/
+        __init__.py
+        flox.py
+```
+## External libraries
+
+In order to make installation for the user easy, Flox will add `lib/` from your plugins root directory to the system path.
+Install all external packages to this directory. 
+
+This can be done easily with `pip install --target=./lib <package>`
+
+### Example
+
+```
+Plugin/
+    plugin.json
+    icon.png
+    flox/
+        __init__.py
+        flox.py
+    lib/
+        packageA/
+            ...
+        packageB/
+            ...
+    yourplugin.py
+    ...
+ ```
+ 
+## Flow Launcher Setup
+
+Flow Launcher requires an external package to handle json-rpc. Flox will attempt to import the flowlahncher package from the plugin's `lib/` directory (described above).
+Including this with your package is recommended to avoid the user from having to install external packages to run.
+
