@@ -17,6 +17,7 @@ class Launcher(object):
         # proxy is not working now
         # self.proxy = rpc_request.get("proxy",{})
         request_method_name = rpc_request.get("method")
+        #transform query and context calls to internal flox methods
         if request_method_name == 'query' or request_method_name == 'context_menu':
             request_method_name = f"_{request_method_name}"
         request_parameters = rpc_request.get("parameters")
