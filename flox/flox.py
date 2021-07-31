@@ -2,6 +2,8 @@ import sys
 import os
 import json
 import time
+import webbrowser
+import urllib
 from datetime import date
 
 try:
@@ -102,6 +104,17 @@ class Flox(Launcher):
                 subtitle=str(e)
             )
         return self._results
+
+    def github_issue(self, title, log=None):
+        url = self.manifest['Website']
+        if 'github' in url.lower():
+            if log is None:
+                with open(self.applog, 'r') as l:
+                    log = l.readlines()[-50:]
+            error_msg = urllib.parse.quote_plus(''.join(log))
+            issue_body = f"Please+type+any+relevant+information+here%0A%0A%0A%0A%0A%0A%3Cdetails%3E%3Csummary%3EError+Log%3C%2Fsummary%3E%0A%3Cp%3E%0A%0A%60%60%60%0A{error_msg}%0A%60%60%60%0A%3C%2Fp%3E%0A%3C%2Fdetails%3E"
+            url = f"{url}/issues/new?title={title}&body={issue_body}"
+        webbrowser.open(url)
 
     def add_item(self, title, subtitle='', icon=None, method=None, parameters=None, context=None, hide=False):
 
