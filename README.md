@@ -2,6 +2,8 @@
 
 Python library to help build Flow Launcher and Wox plugins
 
+Flox adds many useful methods to speed up plugin devolpment
+
 ## Installation
 
 Flox should be installed in the plugins root directory like so:
