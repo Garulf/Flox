@@ -65,6 +65,7 @@ class Flox(Launcher):
         self._manifest = None
         self._results = []
         self._plugindir = None
+        self._approam = None
         self._appdir = None
         self._app_settings = None
         self._user_keywords = None
@@ -164,21 +165,21 @@ class Flox(Launcher):
         return self.manifest['Version']
 
     @property
-    def appdir(self):
-        if not self._appdir:
-            potential_appdir = os.path.dirname(os.path.dirname(self.plugindir))
-            if os.path.exists(os.path.join(potential_appdir, 'Plugins')):
-                self._appdir = potential_appdir
+    def approam(self):
+        if not self._approam:
+            potential_approam = os.path.dirname(os.path.dirname(self.plugindir))
+            if os.path.exists(os.path.join(potential_approam, 'Plugins')):
+                self._approam = potential_approam
             elif PRETEXT == 'Flow.Launcher':
-                self._appdir = os.path.join(os.getenv('APPDATA'), 'FlowLauncher')
+                self._approam = os.path.join(os.getenv('approam'), 'FlowLauncher')
             elif PRETEXT == 'Wox':
-                self._appdir = os.path.join(os.getenv('APPDATA'), 'Wox')
-        return self._appdir
+                self._approam = os.path.join(os.getenv('approam'), 'Wox')
+        return self._approam
 
     @property
     def app_settings(self):
         if not self._app_settings:
-            with open(os.path.join(self.appdir, 'Settings', 'Settings.json'), 'r') as f:
+            with open(os.path.join(self.approam, 'Settings', 'Settings.json'), 'r') as f:
                 self._app_settings = json.load(f)
         return self._app_settings
 
