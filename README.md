@@ -1,8 +1,19 @@
 # FLOX
 
-## About
-
 Python library to help build Flow Launcher and Wox plugins
+
+## Installation
+
+Flox should be installed in the plugins root directory like so:
+
+```
+Plugin/
+    plugin.json
+    yourplugin.py
+    flox/
+        __init__.py
+        flox.py
+```
 
 ## Usage
 
@@ -34,16 +45,6 @@ if __name__ == "__main__":
     Test()
 ```
 
-Flox should be installed in the plugins root directory like so:
-
-```
-Plugin/
-    plugin.json
-    yourplugin.py
-    flox/
-        __init__.py
-        flox.py
-```
 ## External libraries
 
 In order to make installation for the user easy, Flox will add `lib/` from your plugins root directory to the system path.
