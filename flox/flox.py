@@ -89,7 +89,10 @@ class Flox(Launcher):
         except Exception as e:
             self.add_item(
                 title=e.__class__.__name__,
-                subtitle=str(e)
+                subtitle=str(e),
+                icon=ICON_APP_ERROR,
+                method='github_issue',
+                parameters=[e.__class__.__name__]
             )
         return self._results
 
@@ -101,7 +104,8 @@ class Flox(Launcher):
         except Exception as e:
             self.add_item(
                 title=e.__class__.__name__,
-                subtitle=str(e)
+                subtitle=str(e),
+                icon=ICON_APP_ERROR
             )
         return self._results
 
