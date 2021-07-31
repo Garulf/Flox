@@ -23,26 +23,23 @@ from flox import Flox
 import requests
 
 # have your class inherit from Flox
-class Test(Flox):
+class YourClass(Flox):
 
-    # add underscore to have Flox run on query
-    def _query(self, query):
+    def query(self, query):
         for _ in range(250):
             self.add_item(
                 title=self.args,
                 subtitle=str(_)
             )
 
-    # _context will run when the context menu is activated
-    def _context_menu(self, data):
-        for _ in range(250):
-            self.add_item(
-                title=self.args,
-                subtitle=str(Flox.__bases__[0].__name__)
-            )
+    def context_menu(self, data):
+        self.add_item(
+            title=data,
+            subtitle=data
+        )
 
 if __name__ == "__main__":
-    Test()
+    YourClass()
 ```
 
 ## External libraries
