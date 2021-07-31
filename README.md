@@ -69,9 +69,4 @@ Plugin/
     yourplugin.py
     ...
  ```
- 
-## Flow Launcher Setup
-
-Flow Launcher requires an external package to handle json-rpc. Flox will attempt to import the flowlahncher package from the plugin's `lib/` directory (described above).
-Including this with your package is recommended to avoid the user from having to install external packages to run.
 
