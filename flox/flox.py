@@ -130,9 +130,11 @@ class Flox(Launcher):
             "ContextData": context,
             "JsonRPCAction": {}
         }
-        item['JsonRPCAction']['method'] = method
-        item['JsonRPCAction']['parameters'] = parameters
-        item['JsonRPCAction']['dontHideAfterAction'] = hide        
+        if method:
+            item['JsonRPCAction']['method'] = method
+            item['JsonRPCAction']['parameters'] = parameters or []
+        if hide:
+            item['JsonRPCAction']['dontHideAfterAction'] = hide        
         self._results.append(item)
         return item
 
