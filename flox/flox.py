@@ -108,7 +108,10 @@ class Flox(Launcher):
             "IcoPath": icon or self.icon,
             "ContextData": context,
             "JsonRPCAction": {}
-        }    
+        }
+        item['JsonRPCAction']['method'] = method
+        item['JsonRPCAction']['parameters'] = parameters
+        item['JsonRPCAction']['dontHideAfterAction'] = hide        
         self._results.append(item)
         return item
 
