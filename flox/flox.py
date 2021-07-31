@@ -193,3 +193,8 @@ class Flox(Launcher):
     def user_keyword(self):
         return self.user_keywords[0]
 
+    @property
+    def appdir(self):
+        if not self._appdir:
+            self._appdir = os.path.dirname(os.getenv('PYTHONPATH'))
+        return self._appdir
