@@ -2,6 +2,7 @@ import sys
 import os
 import json
 import time
+from datetime import date
 
 try:
     from wox import Wox as Launcher
@@ -69,6 +70,7 @@ class Flox(Launcher):
         self._appdir = None
         self._app_settings = None
         self._user_keywords = None
+        self._appversion = None
         if lib:
             lib_path = os.path.join(plugindir, lib)
             sys.path.append(lib_path)
@@ -202,3 +204,15 @@ class Flox(Launcher):
     def appicon(self, icon):
         return os.path.join(self.appdir, 'images', icon + '.png')
 
+    @property
+    def applog(self):
+        today = date.today().strftime('%Y-%m-%d')
+        file = f"{today}.txt"
+        return os.path.join(self.approam, 'Logs', self.appversion, file)
+
+    
+    @property
+    def appversion(self):
+        if not self._appversion:
+            self._appversion = os.path.basename(self.appdir).replace('app-', '')
+        return self._appversion
