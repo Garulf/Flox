@@ -6,13 +6,14 @@ import webbrowser
 import urllib
 from datetime import date
 
+
 try:
     from wox import Wox as Launcher
     from wox import WoxAPI as API
     PRETEXT = 'Wox'
 except ModuleNotFoundError:
-    from .lib.flowlauncher import FlowLauncher as Launcher
-    from .lib.flowlauncher import FlowLauncherAPI as API
+    from lib.flowlauncher import FlowLauncher as Launcher
+    from lib.flowlauncher import FlowLauncherAPI as API
     PRETEXT = 'Flow.Launcher'
 
 PLUGIN_MANIFEST = 'plugin.json'
