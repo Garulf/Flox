@@ -5,16 +5,9 @@ import time
 import webbrowser
 import urllib
 from datetime import date
+import inspect
 
-
-try:
-    from wox import Wox as Launcher
-    from wox import WoxAPI as API
-    PRETEXT = 'Wox'
-except ModuleNotFoundError:
-    from lib.flowlauncher import FlowLauncher as Launcher
-    from lib.flowlauncher import FlowLauncherAPI as API
-    PRETEXT = 'Flow.Launcher'
+from .launcher import Launcher, LauncherAPI
 
 PLUGIN_MANIFEST = 'plugin.json'
 
@@ -80,12 +73,11 @@ class Flox(Launcher):
         super().__init__()
 
 
-    def query(self, query):
+    def _query(self, query):
         try:
             self.args = query.lower()
-            self.query = query
 
-            self._query(query)
+            self.query(query)
 
         except Exception as e:
             self.add_item(
@@ -95,12 +87,13 @@ class Flox(Launcher):
                 method='github_issue',
                 parameters=[e.__class__.__name__]
             )
+            raise
         return self._results
 
-    def context_menu(self, data):
+    def _context_menu(self, data):
         try:
 
-            self._context_menu()
+            self.context_menu()
 
         except Exception as e:
             self.add_item(
@@ -236,3 +229,4 @@ class Flox(Launcher):
         if not self._appversion:
             self._appversion = os.path.basename(self.appdir).replace('app-', '')
         return self._appversion
+

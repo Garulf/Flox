@@ -2,6 +2,7 @@ import sys
 import os
 
 from .flox import Flox
+from .launcher import Launcher
 
 PLUGIN_MANIFEST = 'plugin.json'
 
@@ -27,6 +28,7 @@ for path in potential_paths:
 lib_path = os.path.join(plugindir, 'lib')
 if os.path.exists(lib_path):
     sys.path.append(lib_path)
+
 
 from .flox import (
     ICON_APP,
