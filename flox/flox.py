@@ -198,3 +198,7 @@ class Flox(Launcher):
         if not self._appdir:
             self._appdir = os.path.dirname(os.getenv('PYTHONPATH'))
         return self._appdir
+
+    def appicon(self, icon):
+        return os.path.join(self.appdir, 'images', icon + '.png')
+
