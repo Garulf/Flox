@@ -24,8 +24,14 @@ class Launcher(object):
         methods = inspect.getmembers(self, predicate=inspect.ismethod)
 
         request_method = dict(methods)[request_method_name]
-        results = request_method(*request_parameters)
-
+        try:
+            results = request_method(*request_parameters)
+        except Exception as e:
+            try:
+                self.logger.exception(f'Exception while calling method: {request_method_name}')
+            except AttributeError:
+                pass
+            raise
         if request_method_name == "_query" or request_method_name == "_context_menu":
             print(json.dumps({"result": results}))
 

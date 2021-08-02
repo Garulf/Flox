@@ -3,9 +3,11 @@ import os
 import json
 import time
 import webbrowser
-import urllib
+import urllib.parse
 from datetime import date
 import inspect
+import logging
+import logging.handlers
 
 from .launcher import Launcher, LauncherAPI
 
@@ -67,6 +69,8 @@ class Flox(Launcher):
         self._app_settings = None
         self._user_keywords = None
         self._appversion = None
+        self._logger = None
+        self.except_results = False
         if lib:
             lib_path = os.path.join(plugindir, lib)
             sys.path.append(lib_path)
@@ -80,13 +84,10 @@ class Flox(Launcher):
             self.query(query)
 
         except Exception as e:
-            self.add_item(
-                title=e.__class__.__name__,
-                subtitle=str(e),
-                icon=ICON_APP_ERROR,
-                method='github_issue',
-                parameters=[e.__class__.__name__]
-            )
+            if self.except_results:
+                self._add_except(e)
+            else:
+                raise
         return self._results
 
     def _context_menu(self, data):
@@ -95,12 +96,20 @@ class Flox(Launcher):
             self.context_menu(data)
 
         except Exception as e:
-            self.add_item(
-                title=e.__class__.__name__,
-                subtitle=str(e),
-                icon=ICON_APP_ERROR
-            )
+            if self.except_results:
+                self._add_except(e)
+            else:
+                raise
         return self._results
+
+    def _add_except(self, e):
+        self.add_item(
+            title=e.__class__.__name__,
+            subtitle=str(e),
+            icon=ICON_APP_ERROR,
+            method='github_issue',
+            parameters=[e.__class__.__name__]
+        )
 
     def github_issue(self, title, log=None):
         url = self.manifest['Website']
@@ -224,3 +233,24 @@ class Flox(Launcher):
             self._appversion = os.path.basename(self.rundir).replace('app-', '')
         return self._appversion
 
+    @property
+    def logfile(self):
+        file = f"{self.manifest['Name']}.log"
+        return os.path.join(self.plugindir, file)
+
+    @property
+    def logger(self):
+        if not self._logger:
+            logger = logging.getLogger('')
+            formatter = logging.Formatter(
+                '%(asctime)s %(levelname)s (%(filename)s): %(message)s',
+                datefmt='%H:%M:%S')
+            logfile = logging.handlers.RotatingFileHandler(
+                    self.logfile,
+                    maxBytes=1024 * 1024,
+                    backupCount=1)
+            logfile.setFormatter(formatter)
+            logger.addHandler(logfile)
+            logger.setLevel(logging.DEBUG)
+            self._logger = logger
+        return self._logger
