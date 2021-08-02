@@ -74,6 +74,8 @@ class Flox(Launcher):
         self._appversion = None
         self._logger = None
         self.except_results = False
+        self._settings_path = None
+        self._settings = None
         if lib:
             lib_path = os.path.join(plugindir, lib)
             sys.path.append(lib_path)
@@ -270,6 +272,30 @@ class Flox(Launcher):
             self.logger.info(self._api)
         return self._api
 
+    @property
+    def name(self):
+        return self.manifest['Name']
+
+    @property
+    def author(self):
+        return self.manifest['Author']
+
+    @property
+    def settings_path(self):
+        if self._settings_path is None:
+            dirname = f"Plugin.{self.name.capitalize()}.{self.author.capitalize()}"
+            setting_file = "Settings.json"
+            self._settings_path = os.path.join(self.appdata, 'Settings', 'Plugins', dirname, setting_file)
+        return self._settings
+
+    @property
+    def settings(self):
+        if self._settings is None:
+            self.logger.info(self.settings_path)
+            if not os.path.exists(os.path.dirname(self._settings_path)):
+                os.mkdir(os.path.dirname(self._settings_path))
+            self._settings = Settings(self._settings_path)
+        return self._settings
 
     def change_query(self, query, requery=False):
         """
@@ -331,3 +357,43 @@ class Flox(Launcher):
         reload all launcher plugins
         """
         print(json.dumps({"method": f"{self.api}.ReloadPlugins","parameters":[]}))
+
+class Settings(dict):
+
+    def __init__(self, filepath):
+        self._filepath = filepath
+        if os.path.exists(self._filepath):
+            self._load()
+        self._save = True
+        
+    def _load(self):
+        data = {}
+        with open(self._filepath, 'r') as f:
+            try:
+                data.update(json.load(f))
+            except json.decoder.JSONDecodeError:
+                pass
+
+        self._save = False
+        self.update(data)
+        self._save = True
+
+    def save(self):
+        if self._save:
+            data = {}
+            data.update(self)
+            with open(self._filepath, 'w') as f:
+                json.dump(data, f, sort_keys=True, indent=4)
+        return
+    
+    def __setitem__(self, key, value):
+        super(Settings, self).__setitem__(key, value)
+        self.save()
+
+    def __delitem__(self, key):
+        super(Settings, self).__delitem__(key)
+        self.save()
+
+    def update(self, *args, **kwargs):
+        super(Settings, self).update(*args, **kwargs)
+        self.save()
