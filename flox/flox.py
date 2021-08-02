@@ -286,15 +286,16 @@ class Flox(Launcher):
             dirname = f"Plugin.{self.name.capitalize()}.{self.author.capitalize()}"
             setting_file = "Settings.json"
             self._settings_path = os.path.join(self.appdata, 'Settings', 'Plugins', dirname, setting_file)
-        return self._settings
+        return self._settings_path
 
     @property
     def settings(self):
         if self._settings is None:
-            self.logger.info(self.settings_path)
-            if not os.path.exists(os.path.dirname(self._settings_path)):
-                os.mkdir(os.path.dirname(self._settings_path))
-            self._settings = Settings(self._settings_path)
+
+            if not os.path.exists(os.path.dirname(self.settings_path)):
+                self.logger.info(os.path.dirname(self.settings_path))
+                os.mkdir(os.path.dirname(self.settings_path))
+            self._settings = Settings(self.settings_path)
         return self._settings
 
     def change_query(self, query, requery=False):
