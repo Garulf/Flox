@@ -404,3 +404,8 @@ class Settings(dict):
     def update(self, *args, **kwargs):
         super(Settings, self).update(*args, **kwargs)
         self.save()
+
+    def setdefault(self, key, value=None):
+        ret = super(Settings, self).setdefault(key, value)
+        self.save()
+        return ret
