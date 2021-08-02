@@ -62,7 +62,7 @@ class Flox(Launcher):
         self._manifest = None
         self._results = []
         self._plugindir = None
-        self._approam = None
+        self._appdata = None
         self._appdir = None
         self._app_settings = None
         self._user_keywords = None
@@ -87,7 +87,6 @@ class Flox(Launcher):
                 method='github_issue',
                 parameters=[e.__class__.__name__]
             )
-            raise
         return self._results
 
     def _context_menu(self, data):
@@ -180,21 +179,16 @@ class Flox(Launcher):
         return self.manifest['Version']
 
     @property
-    def approam(self):
-        if not self._approam:
-            potential_approam = os.path.dirname(os.path.dirname(self.plugindir))
-            if os.path.exists(os.path.join(potential_approam, 'Plugins')):
-                self._approam = potential_approam
-            elif PRETEXT == 'Flow.Launcher':
-                self._approam = os.path.join(os.getenv('approam'), 'FlowLauncher')
-            elif PRETEXT == 'Wox':
-                self._approam = os.path.join(os.getenv('approam'), 'Wox')
-        return self._approam
+    def appdata(self):
+        if not self._appdata:
+            # Userdata should be up two directories from plugin root
+            self._appdata = os.path.dirname(os.path.dirname(self.plugindir))
+        return self._appdata
 
     @property
     def app_settings(self):
         if not self._app_settings:
-            with open(os.path.join(self.approam, 'Settings', 'Settings.json'), 'r') as f:
+            with open(os.path.join(self.appdata, 'Settings', 'Settings.json'), 'r') as f:
                 self._app_settings = json.load(f)
         return self._app_settings
 
@@ -209,24 +203,24 @@ class Flox(Launcher):
         return self.user_keywords[0]
 
     @property
-    def appdir(self):
+    def rundir(self):
         if not self._appdir:
             self._appdir = os.path.dirname(os.getenv('PYTHONPATH'))
         return self._appdir
 
     def appicon(self, icon):
-        return os.path.join(self.appdir, 'images', icon + '.png')
+        return os.path.join(self.rundir, 'images', icon + '.png')
 
     @property
     def applog(self):
         today = date.today().strftime('%Y-%m-%d')
         file = f"{today}.txt"
-        return os.path.join(self.approam, 'Logs', self.appversion, file)
+        return os.path.join(self.appdata, 'Logs', self.appversion, file)
 
     
     @property
     def appversion(self):
         if not self._appversion:
-            self._appversion = os.path.basename(self.appdir).replace('app-', '')
+            self._appversion = os.path.basename(self.rundir).replace('app-', '')
         return self._appversion
 
