@@ -362,10 +362,16 @@ class Flox(Launcher):
 class Settings(dict):
 
     def __init__(self, filepath):
+        super(Settings, self).__init__()
         self._filepath = filepath
+        self._save = True
         if os.path.exists(self._filepath):
             self._load()
-        self._save = True
+        else:
+            data = {}
+            self.update(data)
+            self.save()
+
         
     def _load(self):
         data = {}
