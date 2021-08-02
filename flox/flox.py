@@ -3,13 +3,17 @@ import os
 import json
 import time
 import webbrowser
-import urllib
+import urllib.parse
 from datetime import date
 import inspect
+import logging
+import logging.handlers
 
-from .launcher import Launcher, LauncherAPI
+from .launcher import Launcher
 
 PLUGIN_MANIFEST = 'plugin.json'
+FLOW_API = 'Flow.Launcher'
+WOX_API = 'Wox'
 
 APP_ICONS = os.path.join(os.path.dirname(os.getenv('PYTHONPATH')), 'Images')
 
@@ -59,14 +63,17 @@ class Flox(Launcher):
 
     def __init__(self, lib=None):
         self._start = time.time()
+        self._api = None
         self._manifest = None
         self._results = []
         self._plugindir = None
-        self._approam = None
+        self._appdata = None
         self._appdir = None
         self._app_settings = None
         self._user_keywords = None
         self._appversion = None
+        self._logger = None
+        self.except_results = False
         if lib:
             lib_path = os.path.join(plugindir, lib)
             sys.path.append(lib_path)
@@ -80,14 +87,10 @@ class Flox(Launcher):
             self.query(query)
 
         except Exception as e:
-            self.add_item(
-                title=e.__class__.__name__,
-                subtitle=str(e),
-                icon=ICON_APP_ERROR,
-                method='github_issue',
-                parameters=[e.__class__.__name__]
-            )
-            raise
+            if self.except_results:
+                self._add_except(e)
+            else:
+                raise
         return self._results
 
     def _context_menu(self, data):
@@ -96,12 +99,20 @@ class Flox(Launcher):
             self.context_menu(data)
 
         except Exception as e:
-            self.add_item(
-                title=e.__class__.__name__,
-                subtitle=str(e),
-                icon=ICON_APP_ERROR
-            )
+            if self.except_results:
+                self._add_except(e)
+            else:
+                raise
         return self._results
+
+    def _add_except(self, e):
+        self.add_item(
+            title=e.__class__.__name__,
+            subtitle=str(e),
+            icon=ICON_APP_ERROR,
+            method='github_issue',
+            parameters=[e.__class__.__name__]
+        )
 
     def github_issue(self, title, log=None):
         url = self.manifest['Website']
@@ -180,21 +191,16 @@ class Flox(Launcher):
         return self.manifest['Version']
 
     @property
-    def approam(self):
-        if not self._approam:
-            potential_approam = os.path.dirname(os.path.dirname(self.plugindir))
-            if os.path.exists(os.path.join(potential_approam, 'Plugins')):
-                self._approam = potential_approam
-            elif PRETEXT == 'Flow.Launcher':
-                self._approam = os.path.join(os.getenv('approam'), 'FlowLauncher')
-            elif PRETEXT == 'Wox':
-                self._approam = os.path.join(os.getenv('approam'), 'Wox')
-        return self._approam
+    def appdata(self):
+        if not self._appdata:
+            # Userdata should be up two directories from plugin root
+            self._appdata = os.path.dirname(os.path.dirname(self.plugindir))
+        return self._appdata
 
     @property
     def app_settings(self):
         if not self._app_settings:
-            with open(os.path.join(self.approam, 'Settings', 'Settings.json'), 'r') as f:
+            with open(os.path.join(self.appdata, 'Settings', 'Settings.json'), 'r') as f:
                 self._app_settings = json.load(f)
         return self._app_settings
 
@@ -209,24 +215,119 @@ class Flox(Launcher):
         return self.user_keywords[0]
 
     @property
-    def appdir(self):
+    def rundir(self):
         if not self._appdir:
             self._appdir = os.path.dirname(os.getenv('PYTHONPATH'))
         return self._appdir
 
     def appicon(self, icon):
-        return os.path.join(self.appdir, 'images', icon + '.png')
+        return os.path.join(self.rundir, 'images', icon + '.png')
 
     @property
     def applog(self):
         today = date.today().strftime('%Y-%m-%d')
         file = f"{today}.txt"
-        return os.path.join(self.approam, 'Logs', self.appversion, file)
+        return os.path.join(self.appdata, 'Logs', self.appversion, file)
 
     
     @property
     def appversion(self):
         if not self._appversion:
-            self._appversion = os.path.basename(self.appdir).replace('app-', '')
+            self._appversion = os.path.basename(self.rundir).replace('app-', '')
         return self._appversion
 
+    @property
+    def logfile(self):
+        file = f"{self.manifest['Name']}.log"
+        return os.path.join(self.plugindir, file)
+
+    @property
+    def logger(self):
+        if not self._logger:
+            logger = logging.getLogger('')
+            formatter = logging.Formatter(
+                '%(asctime)s %(levelname)s (%(filename)s): %(message)s',
+                datefmt='%H:%M:%S')
+            logfile = logging.handlers.RotatingFileHandler(
+                    self.logfile,
+                    maxBytes=1024 * 1024,
+                    backupCount=1)
+            logfile.setFormatter(formatter)
+            logger.addHandler(logfile)
+            logger.setLevel(logging.DEBUG)
+            self._logger = logger
+        return self._logger
+
+    @property
+    def api(self):
+        if not self._api:
+            launcher = os.path.basename(os.path.dirname(self.rundir))
+            self.logger.info(launcher)
+            if launcher == 'FlowLauncher':
+                self._api = FLOW_API
+            else:
+                self._api = WOX_API
+            self.logger.info(self._api)
+        return self._api
+
+
+    def change_query(self, query, requery=False):
+        """
+        change query
+        """
+        print(json.dumps({"method": f"{self.api}.ChangeQuery","parameters":[query,requery]}))
+
+    def shell_run(self, cmd):
+        """
+        run shell commands
+        """
+        print(json.dumps({"method": f"{self.api}.ShellRun","parameters":[cmd]}))
+
+    def close_app(self):
+        """
+        close launcher
+        """
+        print(json.dumps({"method": f"{self.api}.CloseApp","parameters":[]}))
+
+    def hide_app(self):
+        """
+        hide launcher
+        """
+        print(json.dumps({"method": f"{self.api}.HideApp","parameters":[]}))
+
+    def show_app(self):
+        """
+        show launcher
+        """
+        print(json.dumps({"method": f"{self.api}.ShowApp","parameters":[]}))
+
+    def show_msg(self, title, sub_title, ico_path=""):
+        """
+        show messagebox
+        """
+        print(json.dumps({"method": f"{self.api}.ShowMsg","parameters":[title,sub_title,ico_path]}))
+
+    def open_setting_dialog(self):
+        """
+        open setting dialog
+        """
+        self.logger.debug(json.dumps({"method": f"{self.api}.OpenSettingDialog","parameters":[]}))
+        print(json.dumps({"method": f"{self.api}.OpenSettingDialog","parameters":[]}))
+
+    def start_loadingbar(self):
+        """
+        start loading animation in wox
+        """
+        print(json.dumps({"method": f"{self.api}.StartLoadingBar","parameters":[]}))
+
+    def stop_loadingbar(self):
+        """
+        stop loading animation in wox
+        """
+        print(json.dumps({"method": f"{self.api}.StopLoadingBar","parameters":[]}))
+
+    def reload_plugins(self):
+        """
+        reload all launcher plugins
+        """
+        print(json.dumps({"method": f"{self.api}.ReloadPlugins","parameters":[]}))
