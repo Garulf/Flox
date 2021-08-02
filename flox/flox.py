@@ -77,7 +77,7 @@ class Flox(Launcher):
         self._settings_path = None
         self._settings = None
         if lib:
-            lib_path = os.path.join(plugindir, lib)
+            lib_path = os.path.join(self.plugindir, lib)
             sys.path.append(lib_path)
         super().__init__()
 
