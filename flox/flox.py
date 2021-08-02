@@ -9,9 +9,11 @@ import inspect
 import logging
 import logging.handlers
 
-from .launcher import Launcher, LauncherAPI
+from .launcher import Launcher
 
 PLUGIN_MANIFEST = 'plugin.json'
+FLOW_API = 'Flow.Launcher'
+WOX_API = 'Wox'
 
 APP_ICONS = os.path.join(os.path.dirname(os.getenv('PYTHONPATH')), 'Images')
 
@@ -61,6 +63,7 @@ class Flox(Launcher):
 
     def __init__(self, lib=None):
         self._start = time.time()
+        self._api = None
         self._manifest = None
         self._results = []
         self._plugindir = None
@@ -254,3 +257,77 @@ class Flox(Launcher):
             logger.setLevel(logging.DEBUG)
             self._logger = logger
         return self._logger
+
+    @property
+    def api(self):
+        if not self._api:
+            launcher = os.path.basename(os.path.dirname(self.rundir))
+            self.logger.info(launcher)
+            if launcher == 'FlowLauncher':
+                self._api = FLOW_API
+            else:
+                self._api = WOX_API
+            self.logger.info(self._api)
+        return self._api
+
+
+    def change_query(self, query, requery=False):
+        """
+        change query
+        """
+        print(json.dumps({"method": f"{self.api}.ChangeQuery","parameters":[query,requery]}))
+
+    def shell_run(self, cmd):
+        """
+        run shell commands
+        """
+        print(json.dumps({"method": f"{self.api}.ShellRun","parameters":[cmd]}))
+
+    def close_app(self):
+        """
+        close launcher
+        """
+        print(json.dumps({"method": f"{self.api}.CloseApp","parameters":[]}))
+
+    def hide_app(self):
+        """
+        hide launcher
+        """
+        print(json.dumps({"method": f"{self.api}.HideApp","parameters":[]}))
+
+    def show_app(self):
+        """
+        show launcher
+        """
+        print(json.dumps({"method": f"{self.api}.ShowApp","parameters":[]}))
+
+    def show_msg(self, title, sub_title, ico_path=""):
+        """
+        show messagebox
+        """
+        print(json.dumps({"method": f"{self.api}.ShowMsg","parameters":[title,sub_title,ico_path]}))
+
+    def open_setting_dialog(self):
+        """
+        open setting dialog
+        """
+        self.logger.debug(json.dumps({"method": f"{self.api}.OpenSettingDialog","parameters":[]}))
+        print(json.dumps({"method": f"{self.api}.OpenSettingDialog","parameters":[]}))
+
+    def start_loadingbar(self):
+        """
+        start loading animation in wox
+        """
+        print(json.dumps({"method": f"{self.api}.StartLoadingBar","parameters":[]}))
+
+    def stop_loadingbar(self):
+        """
+        stop loading animation in wox
+        """
+        print(json.dumps({"method": f"{self.api}.StopLoadingBar","parameters":[]}))
+
+    def reload_plugins(self):
+        """
+        reload all launcher plugins
+        """
+        print(json.dumps({"method": f"{self.api}.ReloadPlugins","parameters":[]}))
