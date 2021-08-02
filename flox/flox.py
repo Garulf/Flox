@@ -77,7 +77,7 @@ class Flox(Launcher):
         self._settings_path = None
         self._settings = None
         if lib:
-            lib_path = os.path.join(plugindir, lib)
+            lib_path = os.path.join(self.plugindir, lib)
             sys.path.append(lib_path)
         super().__init__()
 
@@ -286,15 +286,16 @@ class Flox(Launcher):
             dirname = f"Plugin.{self.name.capitalize()}.{self.author.capitalize()}"
             setting_file = "Settings.json"
             self._settings_path = os.path.join(self.appdata, 'Settings', 'Plugins', dirname, setting_file)
-        return self._settings
+        return self._settings_path
 
     @property
     def settings(self):
         if self._settings is None:
-            self.logger.info(self.settings_path)
-            if not os.path.exists(os.path.dirname(self._settings_path)):
-                os.mkdir(os.path.dirname(self._settings_path))
-            self._settings = Settings(self._settings_path)
+
+            if not os.path.exists(os.path.dirname(self.settings_path)):
+                self.logger.info(os.path.dirname(self.settings_path))
+                os.mkdir(os.path.dirname(self.settings_path))
+            self._settings = Settings(self.settings_path)
         return self._settings
 
     def change_query(self, query, requery=False):
@@ -361,10 +362,16 @@ class Flox(Launcher):
 class Settings(dict):
 
     def __init__(self, filepath):
+        super(Settings, self).__init__()
         self._filepath = filepath
+        self._save = True
         if os.path.exists(self._filepath):
             self._load()
-        self._save = True
+        else:
+            data = {}
+            self.update(data)
+            self.save()
+
         
     def _load(self):
         data = {}
@@ -397,3 +404,8 @@ class Settings(dict):
     def update(self, *args, **kwargs):
         super(Settings, self).update(*args, **kwargs)
         self.save()
+
+    def setdefault(self, key, value=None):
+        ret = super(Settings, self).setdefault(key, value)
+        self.save()
+        return ret
