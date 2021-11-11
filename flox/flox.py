@@ -14,9 +14,31 @@ from .launcher import Launcher
 PLUGIN_MANIFEST = 'plugin.json'
 FLOW_API = 'Flow.Launcher'
 WOX_API = 'Wox'
+LOCALAPPDATA = os.getenv('LOCALAPPDATA')
+FILE_PATH = os.path.dirname(os.path.abspath(__file__))
+CWD = os.getcwd()
+APP_DIR = ""
 
-APP_ICONS = os.path.join(os.path.dirname(os.getenv('PYTHONPATH')), 'Images')
+if "UserData" in CWD.split(os.path.sep):
+    idx = int(CWD.split(os.path.sep).index("UserData"))
+    APP_DIR = os.path.sep.join(CWD.split(os.path.sep)[:idx])
+elif "UserData" in FILE_PATH.split(os.path.sep):
+    idx = int(FILE_PATH.split(os.path.sep).index("UserData"))
+    APP_DIR = os.path.sep.join(FILE_PATH.split(os.path.sep)[:idx])
+else:
+    _appdirs = os.listdir(os.path.join(LOCALAPPDATA, "FlowLauncher"))
+    _versions = []
+    for dir in _appdirs:
+        if "app-" in dir:
+            _version = dir.split("app-")[1]
+            _version = tuple(map(int, (_version.split("."))))
+            _versions.append(_version)
+    _version = ".".join(map(str, max(_versions)))
+    _dir = f"app-{_version}"
+    APP_DIR = os.path.join(LOCALAPPDATA, "FlowLauncher", _dir )
+    
 
+APP_ICONS = os.path.join(APP_DIR, "Images")
 ICON_APP = os.path.join(APP_ICONS, 'app.png')
 ICON_APP_ERROR = os.path.join(APP_ICONS, 'app_error.png')
 ICON_BROWSER = os.path.join(APP_ICONS, 'browser.png')
@@ -68,7 +90,7 @@ class Flox(Launcher):
         self._results = []
         self._plugindir = None
         self._appdata = None
-        self._appdir = None
+        self.appdir = APP_DIR
         self._app_settings = None
         self._user_keywords = None
         self._appversion = None
@@ -83,6 +105,7 @@ class Flox(Launcher):
 
 
     def _query(self, query):
+        self.logger.info(self.appdata)
         try:
             self.args = query.lower()
 
@@ -216,14 +239,8 @@ class Flox(Launcher):
     def user_keyword(self):
         return self.user_keywords[0]
 
-    @property
-    def rundir(self):
-        if not self._appdir:
-            self._appdir = os.path.dirname(os.getenv('PYTHONPATH'))
-        return self._appdir
-
     def appicon(self, icon):
-        return os.path.join(self.rundir, 'images', icon + '.png')
+        return os.path.join(self.appdir, 'images', icon + '.png')
 
     @property
     def applog(self):
@@ -235,7 +252,7 @@ class Flox(Launcher):
     @property
     def appversion(self):
         if not self._appversion:
-            self._appversion = os.path.basename(self.rundir).replace('app-', '')
+            self._appversion = os.path.basename(self.appdir).replace('app-', '')
         return self._appversion
 
     @property
@@ -263,11 +280,13 @@ class Flox(Launcher):
     @property
     def api(self):
         if not self._api:
-            launcher = os.path.basename(os.path.dirname(self.rundir))
+            launcher = os.path.basename(os.path.dirname(self.appdir))
+            self.logger.info(launcher)
             if launcher == 'FlowLauncher':
                 self._api = FLOW_API
             else:
                 self._api = WOX_API
+            self.logger.info(self._api)
         return self._api
 
     @property
@@ -291,6 +310,7 @@ class Flox(Launcher):
         if self._settings is None:
 
             if not os.path.exists(os.path.dirname(self.settings_path)):
+                self.logger.info(os.path.dirname(self.settings_path))
                 os.mkdir(os.path.dirname(self.settings_path))
             self._settings = Settings(self.settings_path)
         return self._settings
@@ -335,6 +355,7 @@ class Flox(Launcher):
         """
         open setting dialog
         """
+        self.logger.debug(json.dumps({"method": f"{self.api}.OpenSettingDialog","parameters":[]}))
         print(json.dumps({"method": f"{self.api}.OpenSettingDialog","parameters":[]}))
 
     def start_loadingbar(self):
