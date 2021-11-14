@@ -160,7 +160,7 @@ class Flox(Launcher):
             "JsonRPCAction": {}
         }
         if method:
-            item['JsonRPCAction']['method'] = method
+            item['JsonRPCAction']['method'] = getattr(method, "__name__", method)
             item['JsonRPCAction']['parameters'] = parameters or []
         if hide:
             item['JsonRPCAction']['dontHideAfterAction'] = hide        
