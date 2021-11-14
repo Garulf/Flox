@@ -105,7 +105,6 @@ class Flox(Launcher):
 
 
     def _query(self, query):
-        self.logger.info(self.appdata)
         try:
             self.args = query.lower()
 
@@ -281,12 +280,10 @@ class Flox(Launcher):
     def api(self):
         if not self._api:
             launcher = os.path.basename(os.path.dirname(self.appdir))
-            self.logger.info(launcher)
             if launcher == 'FlowLauncher':
                 self._api = FLOW_API
             else:
                 self._api = WOX_API
-            self.logger.info(self._api)
         return self._api
 
     @property
@@ -310,7 +307,6 @@ class Flox(Launcher):
         if self._settings is None:
 
             if not os.path.exists(os.path.dirname(self.settings_path)):
-                self.logger.info(os.path.dirname(self.settings_path))
                 os.mkdir(os.path.dirname(self.settings_path))
             self._settings = Settings(self.settings_path)
         return self._settings
