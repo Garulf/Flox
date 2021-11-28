@@ -3,6 +3,7 @@ import os
 
 from .flox import Flox
 from .launcher import Launcher
+from .clipboard import Clipboard
 
 PLUGIN_MANIFEST = 'plugin.json'
 
