@@ -297,7 +297,7 @@ class Flox(Launcher):
     @property
     def settings_path(self):
         if self._settings_path is None:
-            dirname = f"Plugin.{self.name.capitalize()}.{self.author.capitalize()}"
+            dirname = self.name
             setting_file = "Settings.json"
             self._settings_path = os.path.join(self.appdata, 'Settings', 'Plugins', dirname, setting_file)
         return self._settings_path
