@@ -149,7 +149,7 @@ class Flox(Launcher):
             url = f"{url}/issues/new?title={title}&body={issue_body}"
         webbrowser.open(url)
 
-    def add_item(self, title, subtitle='', icon=None, method=None, parameters=None, context=None, hide=False):
+    def add_item(self, title, subtitle='', icon=None, method=None, parameters=None, context=None, dont_hide=False):
 
         item = {
             "Title": title,
@@ -161,8 +161,8 @@ class Flox(Launcher):
         if method:
             item['JsonRPCAction']['method'] = getattr(method, "__name__", method)
             item['JsonRPCAction']['parameters'] = parameters or []
-        if hide:
-            item['JsonRPCAction']['dontHideAfterAction'] = hide        
+        if dont_hide:
+            item['JsonRPCAction']['dontHideAfterAction'] = dont_hide  
         self._results.append(item)
         return self._results[-1]
 
