@@ -161,7 +161,6 @@ class Flox(Launcher):
         if method:
             item['JsonRPCAction']['method'] = getattr(method, "__name__", method)
             item['JsonRPCAction']['parameters'] = parameters or []
-        if kwargs.pop("dont_hide", False):
             item['JsonRPCAction']['dontHideAfterAction'] = kwargs.pop("dont_hide", False)
         self._results.append(item)
         return self._results[-1]
