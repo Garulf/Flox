@@ -164,7 +164,7 @@ class Flox(Launcher):
         if hide:
             item['JsonRPCAction']['dontHideAfterAction'] = hide        
         self._results.append(item)
-        return item
+        return self._results[-1]
 
     @property
     def plugindir(self):
