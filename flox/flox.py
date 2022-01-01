@@ -5,9 +5,10 @@ import time
 import webbrowser
 import urllib.parse
 from datetime import date
-import inspect
 import logging
 import logging.handlers
+from pathlib import Path
+from typing import Union
 
 from .launcher import Launcher
 
@@ -149,7 +150,7 @@ class Flox(Launcher):
             url = f"{url}/issues/new?title={title}&body={issue_body}"
         webbrowser.open(url)
 
-    def add_item(self, title, subtitle='', icon=None, method=None, parameters=None, context=None, **kwargs):
+    def add_item(self, title:str, subtitle:str='', icon:str=None, method:Union(str, callable)=None, parameters:list=None, context:list=None, glyph:str=None, score:int=0, **kwargs):
 
         item = {
             "Title": title,
@@ -162,6 +163,13 @@ class Flox(Launcher):
             item['JsonRPCAction']['method'] = getattr(method, "__name__", method)
             item['JsonRPCAction']['parameters'] = parameters or []
             item['JsonRPCAction']['dontHideAfterAction'] = kwargs.pop("dont_hide", False)
+        if glyph:
+            item['Glyph'] = {}
+            item['Glyph']['Glyph'] = glyph
+            font_family =  kwargs.pop("font_family", "/Resources/#Segoe Fluent Icons")
+            if font_family.startswith("#"):
+                font_family = Path(self.plugindir).joinpath(font_family)
+            item['Glyph']['FontFamily'] = font_family
         self._results.append(item)
         return self._results[-1]
 
