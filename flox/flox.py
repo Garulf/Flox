@@ -150,7 +150,7 @@ class Flox(Launcher):
             url = f"{url}/issues/new?title={title}&body={issue_body}"
         webbrowser.open(url)
 
-    def add_item(self, title:str, subtitle:str='', icon:str=None, method:Union(str, callable)=None, parameters:list=None, context:list=None, glyph:str=None, score:int=0, **kwargs):
+    def add_item(self, title:str, subtitle:str='', icon:str=None, method:Union[str, callable]=None, parameters:list=None, context:list=None, glyph:str=None, score:int=0, **kwargs):
 
         item = {
             "Title": title,
