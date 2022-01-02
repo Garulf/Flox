@@ -282,7 +282,7 @@ class Flox(Launcher):
                     backupCount=1)
             logfile.setFormatter(formatter)
             logger.addHandler(logfile)
-            logger.setLevel(logging.DEBUG)
+            logger.setLevel(logging.WARNING)
             self._logger = logger
         return self._logger
 
