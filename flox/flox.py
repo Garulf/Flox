@@ -157,6 +157,7 @@ class Flox(Launcher):
             "SubTitle": subtitle,
             "IcoPath": icon or self.icon,
             "ContextData": context,
+            "Score": score,
             "JsonRPCAction": {}
         }
         auto_complete_text = kwargs.pop("auto_complete_text", False)
