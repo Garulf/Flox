@@ -286,6 +286,18 @@ class Flox(Launcher):
             self._logger = logger
         return self._logger
 
+    def logger_level(self, level):
+        if level == "info":
+            self.logger.setLevel(logging.INFO)
+        elif level == "debug":
+            self.logger.setLevel(logging.DEBUG)
+        elif level == "warning":
+            self.logger.setLevel(logging.WARNING)
+        elif level == "error":
+            self.logger.setLevel(logging.ERROR)
+        elif level == "critical":
+            self.logger.setLevel(logging.CRITICAL)
+
     @property
     def api(self):
         if not self._api:
