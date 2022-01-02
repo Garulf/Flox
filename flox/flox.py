@@ -160,9 +160,9 @@ class Flox(Launcher):
             "Score": score,
             "JsonRPCAction": {}
         }
-        auto_complete_text = kwargs.pop("auto_complete_text", False)
+        auto_complete_text = kwargs.pop("auto_complete_text", None)
         if auto_complete_text:
-            item["AutoCompleteText"] = auto_complete_text
+            item["AutoCompleteText"] = auto_complete_text or f'{self.user_keyword} {icon["name"]}'.replace('* ', '')
         if method:
             item['JsonRPCAction']['method'] = getattr(method, "__name__", method)
             item['JsonRPCAction']['parameters'] = parameters or []
