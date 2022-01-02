@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='Flox',
-      version='0.8.4',
+      version='0.8.5',
       description='Python library to help build Flow Launcher and Wox plugins',
       url='https://github.com/Garulf/Flox',
       author='William McAllister',
