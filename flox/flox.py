@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Union
 from functools import wraps
 from tempfile import gettempdir
+from urllib import request
 
 from .launcher import Launcher
 
@@ -355,6 +356,27 @@ class Flox(Launcher):
                 os.mkdir(os.path.dirname(self.settings_path))
             self._settings = Settings(self.settings_path)
         return self._settings
+
+    def download_image(self, url:str, dir:str=gettempdir(), file_name:str=None, **kwargs):
+        """
+        Download image from url and save it to dir
+
+        Args:
+            url (str): image url.
+            dir (str): directory to save image.
+            file_name (str): file name to save image.
+
+        Keyword Args:
+            force_download (bool): Force download image even if it exists.
+        """
+        force_download = kwargs.pop('force_download', False)
+        if not file_name:
+            file_name = url.split('/')[-1]
+        full_path = Path(dir).joinpath(file_name)
+        if not Path(full_path).exists() or force_download:
+            with open(full_path, 'wb') as f:
+                f.write(request.urlopen(url).read())
+        return Path(full_path)
 
     def change_query(self, query, requery=False):
         """
