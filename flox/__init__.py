@@ -104,7 +104,7 @@ class Flox(Launcher):
         if lib:
             lib_path = os.path.join(self.plugindir, lib)
             sys.path.append(lib_path)
-        super().__init__()
+        super().__init__(self.api)
 
     def _query(self, query):
         try:
@@ -336,68 +336,6 @@ class Flox(Launcher):
             self._settings = Settings(self.settings_path)
         return self._settings
 
-
-
-    def change_query(self, query, requery=False):
-        """
-        change query
-        """
-        print(json.dumps({"method": f"{self.api}.ChangeQuery","parameters":[query,requery]}))
-
-    def shell_run(self, cmd):
-        """
-        run shell commands
-        """
-        print(json.dumps({"method": f"{self.api}.ShellRun","parameters":[cmd]}))
-
-    def close_app(self):
-        """
-        close launcher
-        """
-        print(json.dumps({"method": f"{self.api}.CloseApp","parameters":[]}))
-
-    def hide_app(self):
-        """
-        hide launcher
-        """
-        print(json.dumps({"method": f"{self.api}.HideApp","parameters":[]}))
-
-    def show_app(self):
-        """
-        show launcher
-        """
-        print(json.dumps({"method": f"{self.api}.ShowApp","parameters":[]}))
-
-    def show_msg(self, title, sub_title, ico_path=""):
-        """
-        show messagebox
-        """
-        print(json.dumps({"method": f"{self.api}.ShowMsg","parameters":[title,sub_title,ico_path]}))
-
-    def open_setting_dialog(self):
-        """
-        open setting dialog
-        """
-        self.logger.debug(json.dumps({"method": f"{self.api}.OpenSettingDialog","parameters":[]}))
-        print(json.dumps({"method": f"{self.api}.OpenSettingDialog","parameters":[]}))
-
-    def start_loadingbar(self):
-        """
-        start loading animation in wox
-        """
-        print(json.dumps({"method": f"{self.api}.StartLoadingBar","parameters":[]}))
-
-    def stop_loadingbar(self):
-        """
-        stop loading animation in wox
-        """
-        print(json.dumps({"method": f"{self.api}.StopLoadingBar","parameters":[]}))
-
-    def reload_plugins(self):
-        """
-        reload all launcher plugins
-        """
-        print(json.dumps({"method": f"{self.api}.ReloadPlugins","parameters":[]}))
 
 class Settings(dict):
 
