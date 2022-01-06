@@ -215,7 +215,8 @@ class Flox(Launcher):
                     if os.path.exists(os.path.join(path, PLUGIN_MANIFEST)):
                         self._plugindir = path
                         break
-                    elif path == '/':
+                    elif os.path.ismount(path):
+                        self._plugindir = os.getcwd()
                         break
 
                     path = os.path.dirname(path)
