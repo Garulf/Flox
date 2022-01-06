@@ -13,7 +13,9 @@ class Launcher(object):
     """
 
     def __init__(self):
-        rpc_request = json.loads(sys.argv[1])
+        rpc_request = {'method': 'query', 'parameters': ['']}
+        if len(sys.argv) > 1:
+            rpc_request = json.loads(sys.argv[1])
         # proxy is not working now
         # self.proxy = rpc_request.get("proxy",{})
         request_method_name = rpc_request.get("method")
