@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
 import sys
-import inspect
 
 """
 Slightly modified wox.py credit: https://github.com/Wox-launcher/Wox
@@ -23,9 +22,8 @@ class Launcher(object):
         if request_method_name == 'query' or request_method_name == 'context_menu':
             request_method_name = f"_{request_method_name}"
         request_parameters = rpc_request.get("parameters")
-        methods = inspect.getmembers(self, predicate=inspect.ismethod)
 
-        request_method = dict(methods)[request_method_name]
+        request_method = getattr(self, request_method_name)
         try:
             results = request_method(*request_parameters)
         except Exception as e:
