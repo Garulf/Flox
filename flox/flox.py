@@ -9,6 +9,8 @@ import logging
 import logging.handlers
 from pathlib import Path
 from typing import Union
+from functools import wraps
+from tempfile import gettempdir
 
 from .launcher import Launcher
 
@@ -81,6 +83,26 @@ ICON_WARNING = os.path.join(APP_ICONS, 'warning.png')
 ICON_WEB_SEARCH = os.path.join(APP_ICONS, 'web_search.png')
 ICON_WORK = os.path.join(APP_ICONS, 'work.png')
 
+
+def cache(file_name:str, max_age=30, dir=gettempdir()):
+    """
+    Cache decorator
+    """
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            cache_file = Path(dir, file_name)
+            if not cache_file.exists() or time() - cache_file.stat().st_mtime > max_age or cache_file.stat().st_size == 0:
+                data = func(*args, **kwargs)
+                if len(data) != 0 and data is not None:
+                    with open(cache_file, 'w') as f:
+                        json.dump(data, f)
+                return data
+            else:
+                with open(cache_file, 'r') as f:
+                    return json.load(f)
+        return wrapper
+    return decorator
 
 class Flox(Launcher):
 
