@@ -18,7 +18,8 @@ for path in potential_paths:
         if os.path.exists(os.path.join(path, PLUGIN_MANIFEST)):
             plugindir = path
             break
-        elif path == '/':
+        elif os.path.ismount(path):
+            plugindir = os.getcwd()
             break
 
         path = os.path.dirname(path)
