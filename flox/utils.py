@@ -26,7 +26,7 @@ def cache(file_name:str, max_age=30, dir=gettempdir()):
         return wrapper
     return decorator
 
-def download_image(self, url:str, dir:str=gettempdir(), file_name:str=None, **kwargs):
+def download_image(url:str, dir:str=gettempdir(), file_name:str=None, **kwargs):
     """
     Download image from url and save it to dir
 
