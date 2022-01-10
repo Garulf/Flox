@@ -35,7 +35,11 @@ class Launcher(object):
                 pass
             raise
         if request_method_name == "_query" or request_method_name == "_context_menu":
-            print(json.dumps({"result": results}))
+            results = {"result": results}
+            if self._settings != rpc_request.get('Settings') and self._settings is not None:
+                results['SettingsChange'] = self._settings
+
+            print(json.dumps(results))
 
     def query(self,query):
         """
