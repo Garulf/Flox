@@ -244,7 +244,7 @@ class Flox(Launcher):
     @property
     def user_keywords(self):
         if not self._user_keywords:
-            self._user_keywords = self.app_settings['PluginSettings']['Plugins'].get(self.id, {}).get('UserKeywords', ["*"])
+            self._user_keywords = self.app_settings['PluginSettings']['Plugins'].get(self.id, {}).get('UserKeywords', [self.action_keyword])
         return self._user_keywords
 
     @property
