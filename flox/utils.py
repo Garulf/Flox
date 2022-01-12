@@ -26,6 +26,28 @@ def cache(file_name:str, max_age=30, dir=gettempdir()):
         return wrapper
     return decorator
 
+def refresh_cache(file_name:str, dir:str=gettempdir()):
+    """
+    Touch cache file
+    """
+    cache_file = Path(dir, file_name)
+    if cache_file.exists():
+        cache_file.touch()
+
+def cache_path(file_name:str, dir:str=gettempdir()):
+    """
+    Return path to cache file
+    """
+    return Path(dir, file_name)
+
+def remove_cache(file_name:str, dir:str=gettempdir()):
+    """
+    Remove cache file
+    """
+    cache_file = Path(dir, file_name)
+    if cache_file.exists():
+        cache_file.unlink()
+
 def download_image(url:str, dir:str=gettempdir(), file_name:str=None, **kwargs):
     """
     Download image from url and save it to dir
