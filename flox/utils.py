@@ -4,6 +4,7 @@ from pathlib import Path
 from functools import wraps
 import json
 from time import time
+from concurrent.futures import ThreadPoolExecutor
 
 
 def cache(file_name:str, max_age=30, dir=gettempdir()):
@@ -68,3 +69,19 @@ def download_image(url:str, dir:str=gettempdir(), file_name:str=None, **kwargs):
         with open(full_path, 'wb') as f:
             f.write(request.urlopen(url).read())
     return Path(full_path)
+
+def download_images(urls:list, dir:str=gettempdir(), max_workers=5, **kwargs):
+    """
+    Download images from urls and save them to dir using threads.
+
+    Args:
+        urls (list): list of image urls.
+        dir (str): directory to save images.
+        max_workers (int): number of workers to download images.
+
+    Keyword Args:
+        force_download (bool): Force download images even if they exists.
+    """
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        for url in urls:
+            executor.submit(download_image, url, dir, **kwargs)
