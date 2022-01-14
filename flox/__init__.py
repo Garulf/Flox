@@ -337,6 +337,8 @@ class Flox(Launcher):
             self._settings = Settings(self.settings_path)
         return self._settings
 
+    def browser_open(url):
+        webbrowser.open(url)
 
 class Settings(dict):
 
