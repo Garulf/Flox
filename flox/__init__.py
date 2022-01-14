@@ -101,6 +101,7 @@ class Flox(Launcher):
         self.except_results = False
         self._settings_path = None
         self._settings = None
+        self.font_family = '/Resources/#Segoe Fluent Icons'
         if lib:
             lib_path = os.path.join(self.plugindir, lib)
             sys.path.append(lib_path)
@@ -171,9 +172,9 @@ class Flox(Launcher):
         if glyph:
             item['Glyph'] = {}
             item['Glyph']['Glyph'] = glyph
-            font_family =  kwargs.pop("font_family", "/Resources/#Segoe Fluent Icons")
+            font_family =  kwargs.pop("font_family", self.font_family)
             if font_family.startswith("#"):
-                font_family = Path(self.plugindir).joinpath(font_family)
+                font_family = str(Path(self.plugindir).joinpath(font_family))
             item['Glyph']['FontFamily'] = font_family
         self._results.append(item)
         return self._results[-1]
