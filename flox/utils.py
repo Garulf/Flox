@@ -4,8 +4,17 @@ from pathlib import Path
 from functools import wraps
 import json
 from time import time
+import socket
 from concurrent.futures import ThreadPoolExecutor
+import logging
 
+logging = logging.getLogger(__name__)
+
+URL_SCHEMA = [
+    'http://',
+    'https://',
+]
+socket.setdefaulttimeout(15)
 
 def cache(file_name:str, max_age=30, dir=gettempdir()):
     """
@@ -49,9 +58,9 @@ def remove_cache(file_name:str, dir:str=gettempdir()):
     if cache_file.exists():
         cache_file.unlink()
 
-def download_image(url:str, dir:str=gettempdir(), file_name:str=None, **kwargs):
+def download_file(url:str, path, **kwargs):
     """
-    Download image from url and save it to dir
+    Download file from url and save it to dir
 
     Args:
         url (str): image url.
@@ -62,26 +71,28 @@ def download_image(url:str, dir:str=gettempdir(), file_name:str=None, **kwargs):
         force_download (bool): Force download image even if it exists.
     """
     force_download = kwargs.pop('force_download', False)
-    if not file_name:
+    if not force_download and path.exists():
+        return
+    request.urlretrieve(url, path)
+    return Path(path)
+
+def get_icon(url:str, path, file_name:str=None, **kwargs):
+    for schema in URL_SCHEMA:
+        if url.startswith(schema):
+            break
+    else:
+        return url
+    executor = kwargs.pop('executor', False)
+    if file_name is None:
         file_name = url.split('/')[-1]
-    full_path = Path(dir).joinpath(file_name)
-    if not Path(full_path).exists() or force_download:
-        with open(full_path, 'wb') as f:
-            f.write(request.urlopen(url).read())
-    return Path(full_path)
-
-def download_images(urls:list, dir:str=gettempdir(), max_workers=5, **kwargs):
-    """
-    Download images from urls and save them to dir using threads.
-
-    Args:
-        urls (list): list of image urls.
-        dir (str): directory to save images.
-        max_workers (int): number of workers to download images.
-
-    Keyword Args:
-        force_download (bool): Force download images even if they exists.
-    """
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        for url in urls:
-            executor.submit(download_image, url, dir, **kwargs)
+    if not Path(path).is_absolute():
+        path = Path(gettempdir(), path)
+    if not path.exists():
+        path.mkdir()
+    full_path = Path(path, file_name)
+    if not full_path.exists():
+        if executor is False:
+            download_file(url, full_path)
+        else:
+            executor.submit(download_file, url, full_path)
+    return full_path
