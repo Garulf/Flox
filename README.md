@@ -8,9 +8,18 @@ Heavily inspired from the great work done by deanishe at: [deanishe/alfred-workf
 
 ## Installation
 
+
+### PIP install from pypi
+
+```
+pip install flox-lib
+```
+
 ### PIP install from github
 
-`pip install git+https://github.com/garulf/flox.git`
+```
+pip install git+https://github.com/garulf/flox.git
+```
 
 ## Usage
 
