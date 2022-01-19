@@ -4,7 +4,7 @@ Python library to help build Flow Launcher and Wox plugins
 
 Flox adds many useful methods to speed up plugin devolpment
 
-Heavily inspired from the great work done by deanishe at: https://github.com/deanishe/alfred-workflow 
+Heavily inspired from the great work done by deanishe at: [deanishe/alfred-workflow](https://github.com/deanishe/alfred-workflow)
 
 ## Installation
 
