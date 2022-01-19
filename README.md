@@ -21,7 +21,7 @@ pip install flox-lib
 pip install git+https://github.com/garulf/flox.git
 ```
 
-## Usage
+## Basic Usage
 
 ```
 from flox import Flox
