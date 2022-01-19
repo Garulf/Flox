@@ -1,0 +1,32 @@
+name: "Release"
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    tags-ignore:
+      - 'v*'
+    paths: 
+      - flox/version
+env:
+  VERSION_FILE: './flox/version'
+jobs:
+  deps:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    name: "Build"
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Get version
+        id: version
+        run: |
+          read -r version<${{VERSION_FILE}}
+          echo "::set-output name=VERSION::$version"
+      - name: Publish
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: false
+          tag_name: "v${{steps.version.outputs.VERSION}}"
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
