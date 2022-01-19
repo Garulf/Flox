@@ -5,8 +5,8 @@ URL = 'https://github.com/Garulf/Flox'
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-with open("./flox/version", "r") as f:
-    version = f.read().strip()
+with open("flox/version", "r") as fh:
+    version = fh.read().strip()
 
 setup(name='Flox-lib',
       version=version,
@@ -25,4 +25,8 @@ setup(name='Flox-lib',
       author_email='dev.garulf@gmail.com',
       license='MIT',
       packages=['flox'],
-      zip_safe=False)
+      zip_safe=True,
+      include_package_data=True,
+      package_data = {
+            'flox': ['version']
+      })
