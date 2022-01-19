@@ -7,5 +7,5 @@ setup(name='Flox-Lib',
       author='William McAllister',
       author_email='dev.garulf@gmail.com',
       license='MIT',
-      packages=['flox'],
+      packages=['flox-lib'],
       zip_safe=False)
