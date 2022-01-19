@@ -12,6 +12,7 @@ setup(name='Flox-lib',
       version=version,
       description='Python library to help build Flow Launcher and Wox plugins.',
       long_description=long_description,
+      long_description_content_type="text/markdown",
       url=URL,
       project_urls={
               "Bug Tracker": f"{URL}/issues"
