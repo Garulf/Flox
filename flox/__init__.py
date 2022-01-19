@@ -155,9 +155,9 @@ class Flox(Launcher):
     def add_item(self, title:str, subtitle:str='', icon:str=None, method:Union[str, callable]=None, parameters:list=None, context:list=None, glyph:str=None, score:int=0, **kwargs):
 
         item = {
-            "Title": title,
-            "SubTitle": subtitle,
-            "IcoPath": icon or self.icon,
+            "Title": str(title),
+            "SubTitle": str(subtitle),
+            "IcoPath": str(icon) or self.icon,
             "ContextData": context,
             "Score": score,
             "JsonRPCAction": {}
