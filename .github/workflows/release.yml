@@ -20,7 +20,7 @@ jobs:
       - name: Get version
         id: version
         run: |
-          read -r version<${{VERSION_FILE}}
+          read -r version<${{env.VERSION_FILE}}
           echo "::set-output name=VERSION::$version"
       - name: Publish
         uses: softprops/action-gh-release@v1
