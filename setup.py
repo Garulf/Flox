@@ -20,7 +20,7 @@ setup(name='Flox-lib',
       classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
-        "Operating System :: Windows",
+        "Operating System :: Microsoft :: Windows",
       ],
       author='William McAllister',
       author_email='dev.garulf@gmail.com',
