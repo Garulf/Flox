@@ -13,7 +13,7 @@ jobs:
   deps:
     if: ${{ github.ref == 'refs/heads/main' }}
     name: "Build"
-    runs-on: windows-latest
+    runs-on: linux-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
