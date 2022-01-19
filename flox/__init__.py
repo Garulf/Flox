@@ -176,6 +176,8 @@ class Flox(Launcher):
             if font_family.startswith("#"):
                 font_family = str(Path(self.plugindir).joinpath(font_family))
             item['Glyph']['FontFamily'] = font_family
+        for kw in kwargs:
+            item[kw] = kwargs[kw]
         self._results.append(item)
         return self._results[-1]
 
