@@ -87,6 +87,17 @@ ICON_WORK = os.path.join(APP_ICONS, 'work.png')
 class Flox(Launcher):
 
     def __init__(self, lib=None):
+        self.init()
+        super().__init__(self.api)
+
+    def __call__(self):
+        return super().__call__()
+
+    def call(self):
+        self.__call__()
+
+    def init(self, lib=None):
+        self._debug = False
         self._start = time.time()
         self._api = None
         self._manifest = None
@@ -97,15 +108,15 @@ class Flox(Launcher):
         self._app_settings = None
         self._user_keywords = None
         self._appversion = None
-        self._logger = None
         self.except_results = False
         self._settings_path = None
         self._settings = None
+        self._logger = None
+        self.logger
         self.font_family = '/Resources/#Segoe Fluent Icons'
         if lib:
             lib_path = os.path.join(self.plugindir, lib)
             sys.path.append(lib_path)
-        super().__init__(self.api)
 
     def _query(self, query):
         try:
@@ -272,7 +283,7 @@ class Flox(Launcher):
 
     @property
     def logfile(self):
-        file = f"{self.manifest['Name']}.log"
+        file = "plugin.log"
         return os.path.join(self.plugindir, file)
 
     @property
@@ -284,7 +295,7 @@ class Flox(Launcher):
                 datefmt='%H:%M:%S')
             logfile = logging.handlers.RotatingFileHandler(
                     self.logfile,
-                    maxBytes=1024 * 1024,
+                    maxBytes=1024 * 2024,
                     backupCount=1)
             logfile.setFormatter(formatter)
             logger.addHandler(logfile)

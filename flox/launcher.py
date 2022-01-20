@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import sys
+from time import time
 
 """
 Slightly modified wox.py credit: https://github.com/Wox-launcher/Wox
@@ -12,18 +13,28 @@ class Launcher(object):
     """
 
     def __init__(self, API):
-        rpc_request = {'method': 'query', 'parameters': ['']}
+        self.rpc_request = {'method': 'query', 'parameters': ['']}
         if len(sys.argv) > 1:
-            rpc_request = json.loads(sys.argv[1])
-        if 'settings' in rpc_request.keys():
-            self._settings = rpc_request['settings']
+            self.rpc_request = json.loads(sys.argv[1])
+
+        if 'settings' in self.rpc_request.keys():
+            self._settings = self.rpc_request['settings']
+
+        self._debug = self.settings.get('debug', True)
+        if self._debug:
+            self.logger_level("debug")
+        self.logger.debug(f'Request:\n{json.dumps(self.rpc_request, indent=4)}')
+        self.logger.debug(f"Params: {self.rpc_request.get('parameters')}")
+
+    def __call__(self):
         # proxy is not working now
         # self.proxy = rpc_request.get("proxy",{})
-        request_method_name = rpc_request.get("method")
+        request_method_name = self.rpc_request.get("method")
         #transform query and context calls to internal flox methods
         if request_method_name == 'query' or request_method_name == 'context_menu':
             request_method_name = f"_{request_method_name}"
-        request_parameters = rpc_request.get("parameters")
+
+        request_parameters = self.rpc_request.get("parameters")
 
         request_method = getattr(self, request_method_name)
         try:
@@ -34,12 +45,17 @@ class Launcher(object):
             except AttributeError:
                 pass
             raise
+        ms = int((time() - self._start) * 1000)
+        self.logger.debug(f'Total time: {ms}ms')
         if request_method_name == "_query" or request_method_name == "_context_menu":
             results = {"result": results}
-            if self._settings != rpc_request.get('Settings') and self._settings is not None:
+            if self._settings != self.rpc_request.get('Settings') and self._settings is not None:
                 results['SettingsChange'] = self._settings
 
             print(json.dumps(results))
+
+    def __del__(self):
+        self.__call__()
 
     def query(self,query):
         """
