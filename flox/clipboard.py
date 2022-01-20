@@ -37,31 +37,35 @@ GMEM_ZEROINIT = 0x0040
 
 unicode_type = type(u'')
 
-class Clipboard(object):
+def get(self):
+    """
+    Get the contents of the clipboard.
+    """
+    text = None
+    OpenClipboard(None)
+    handle = GetClipboardData(CF_UNICODETEXT)
+    pcontents = GlobalLock(handle)
+    size = GlobalSize(handle)
+    if pcontents and size:
+        raw_data = ctypes.create_string_buffer(size)
+        ctypes.memmove(raw_data, pcontents, size)
+        text = raw_data.raw.decode('utf-16le').rstrip(u'\0')
+    GlobalUnlock(handle)
+    CloseClipboard()
+    return text
 
-    def get(self):
-        text = None
-        OpenClipboard(None)
-        handle = GetClipboardData(CF_UNICODETEXT)
-        pcontents = GlobalLock(handle)
-        size = GlobalSize(handle)
-        if pcontents and size:
-            raw_data = ctypes.create_string_buffer(size)
-            ctypes.memmove(raw_data, pcontents, size)
-            text = raw_data.raw.decode('utf-16le').rstrip(u'\0')
-        GlobalUnlock(handle)
-        CloseClipboard()
-        return text
-
-    def put(self, s):
-        if not isinstance(s, unicode_type):
-            s = s.decode('mbcs')
-        data = s.encode('utf-16le')
-        OpenClipboard(None)
-        EmptyClipboard()
-        handle = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, len(data) + 2)
-        pcontents = GlobalLock(handle)
-        ctypes.memmove(pcontents, data, len(data))
-        GlobalUnlock(handle)
-        SetClipboardData(CF_UNICODETEXT, handle)
-        CloseClipboard()
+def put(self, s):
+    """
+    Put the given string onto the clipboard.
+    """
+    if not isinstance(s, unicode_type):
+        s = s.decode('mbcs')
+    data = s.encode('utf-16le')
+    OpenClipboard(None)
+    EmptyClipboard()
+    handle = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, len(data) + 2)
+    pcontents = GlobalLock(handle)
+    ctypes.memmove(pcontents, data, len(data))
+    GlobalUnlock(handle)
+    SetClipboardData(CF_UNICODETEXT, handle)
+    CloseClipboard()
