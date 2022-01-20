@@ -45,8 +45,9 @@ class Launcher(object):
             except AttributeError:
                 pass
             raise
+        line_break = '#' * 10
         ms = int((time() - self._start) * 1000)
-        self.logger.debug(f'Total time: {ms}ms')
+        self.logger.debug(f'{line_break} Total time: {ms}ms {line_break}')
         if request_method_name == "_query" or request_method_name == "_context_menu":
             results = {"result": results}
             if self._settings != self.rpc_request.get('Settings') and self._settings is not None:
