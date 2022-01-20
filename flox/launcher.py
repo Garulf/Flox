@@ -20,7 +20,7 @@ class Launcher(object):
         if 'settings' in self.rpc_request.keys():
             self._settings = self.rpc_request['settings']
 
-        self._debug = self.settings.get('debug', True)
+        self._debug = self.settings.get('debug', False)
         if self._debug:
             self.logger_level("debug")
         self.logger.debug(f'Request:\n{json.dumps(self.rpc_request, indent=4)}')
