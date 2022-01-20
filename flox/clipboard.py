@@ -37,7 +37,15 @@ GMEM_ZEROINIT = 0x0040
 
 unicode_type = type(u'')
 
-def get(self):
+class Clipboard(object):
+
+    def get(self):
+        return get()
+
+    def put(self, text):
+        return put(text)
+
+def get():
     """
     Get the contents of the clipboard.
     """
@@ -54,7 +62,7 @@ def get(self):
     CloseClipboard()
     return text
 
-def put(self, s):
+def put(s):
     """
     Put the given string onto the clipboard.
     """
