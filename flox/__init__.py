@@ -88,8 +88,9 @@ class Flox(Launcher):
 
     def __init__(self, lib=None, **kwargs):
         self.init()
-        super().__init__(self.api)
         self._debug = kwargs.pop('debug', False)
+        super().__init__(self.api)
+
 
     def __call__(self):
         return super().__call__()
