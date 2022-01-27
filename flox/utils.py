@@ -24,15 +24,21 @@ def cache(file_name:str, max_age=30, dir=gettempdir()):
         @wraps(func)
         def wrapper(*args, **kwargs):
             cache_file = Path(dir, file_name)
-            if not cache_file.exists() or time() - cache_file.stat().st_mtime > max_age or cache_file.stat().st_size == 0:
-                data = func(*args, **kwargs)
-                if len(data) != 0 and data is not None:
-                    with open(cache_file, 'w') as f:
-                        json.dump(data, f)
-                return data
-            else:
+            if cache_file.exists() and time() - cache_file.stat().st_mtime < max_age and cache_file.stat().st_size != 0:
                 with open(cache_file, 'r') as f:
-                    return json.load(f)
+                    try:
+                        cache = json.load(f, encoding='utf-8')
+                    except json.JSONDecodeError:
+                        pass
+                    else:
+                        return cache
+            data = func(*args, **kwargs)
+            if data is None:
+                return None
+            if len(data) != 0:
+                with open(cache_file, 'w') as f:
+                    json.dump(data, f)
+            return data
         return wrapper
     return decorator
 
