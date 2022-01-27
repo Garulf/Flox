@@ -29,7 +29,9 @@ def cache(file_name:str, max_age=30, dir=gettempdir()):
                     try:
                         cache = json.load(f, encoding='utf-8')
                     except json.JSONDecodeError:
-                        pass
+                        logging.warning('Unable to read cache file: %s', cache_file)
+                        f.close()
+                        os.remove(cache_file)
                     else:
                         return cache
             data = func(*args, **kwargs)
