@@ -77,3 +77,6 @@ def put(s):
     GlobalUnlock(handle)
     SetClipboardData(CF_UNICODETEXT, handle)
     CloseClipboard()
+
+def copy(s):
+    put(s)
