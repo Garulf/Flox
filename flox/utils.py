@@ -1,5 +1,6 @@
 from tempfile import gettempdir
 from urllib import request
+from urllib.error import URLError
 from pathlib import Path
 from functools import wraps
 import json
@@ -82,7 +83,10 @@ def download_file(url:str, path, **kwargs):
     force_download = kwargs.pop('force_download', False)
     if not force_download and path.exists():
         return
-    request.urlretrieve(url, path)
+    try:
+        request.urlretrieve(url, path)
+    except URLError as e:
+        logging.exception(f'Unable to download: {url}')
     return Path(path)
 
 def get_icon(url:str, path, file_name:str=None, **kwargs):
