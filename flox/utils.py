@@ -101,7 +101,7 @@ def get_icon(url:str, path, file_name:str=None, **kwargs):
     if not Path(path).is_absolute():
         path = Path(gettempdir(), path)
     if not path.exists():
-        path.mkdir()
+        path.mkdir(parents=True)
     full_path = Path(path, file_name)
     if not full_path.exists():
         if executor is False:
