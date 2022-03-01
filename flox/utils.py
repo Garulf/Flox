@@ -27,9 +27,9 @@ def cache(file_name:str, max_age=30, dir=gettempdir()):
         def wrapper(*args, **kwargs):
             cache_file = Path(dir, file_name)
             if cache_file.exists() and time() - cache_file.stat().st_mtime < max_age and cache_file.stat().st_size != 0:
-                with open(cache_file, 'r') as f:
+                with open(cache_file, 'r', encoding='utf-8') as f:
                     try:
-                        cache = json.load(f, encoding='utf-8')
+                        cache = json.load(f)
                     except json.JSONDecodeError:
                         logging.warning('Unable to read cache file: %s', cache_file)
                         f.close()
