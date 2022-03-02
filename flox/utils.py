@@ -46,6 +46,28 @@ def cache(file_name:str, max_age=30, dir=gettempdir()):
         return wrapper
     return decorator
 
+def read_json(path:str):
+    """
+    Read json file
+    """
+    with open(path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+def write_json(data, path):
+    if not Path(path).parent.exists():
+        Path(path).parent.mkdir(parents=True)
+    with open(path, 'w') as f:
+        json.dump(data, f)
+
+def file_age(path):
+    age = time() - path.stat().st_mtime
+    return age
+
+def get_cache(path, max_age=0):
+    if Path(path).exists() and file_age(path) < max_age and path.stat().st_size != 0:
+        return read_json(path)
+    return None
+
 def refresh_cache(file_name:str, dir:str=gettempdir()):
     """
     Touch cache file
