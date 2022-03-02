@@ -26,7 +26,7 @@ def cache(file_name:str, max_age=30, dir=gettempdir()):
         @wraps(func)
         def wrapper(*args, **kwargs):
             cache_file = Path(dir, file_name)
-            if cache_file.exists() and time() - cache_file.stat().st_mtime < max_age and cache_file.stat().st_size != 0:
+            if cache_file.exists() and file_age(cache_file) < max_age and cache_file.stat().st_size != 0:
                 with open(cache_file, 'r', encoding='utf-8') as f:
                     try:
                         cache = json.load(f)
@@ -40,8 +40,10 @@ def cache(file_name:str, max_age=30, dir=gettempdir()):
             if data is None:
                 return None
             if len(data) != 0:
-                with open(cache_file, 'w') as f:
-                    json.dump(data, f)
+                try:
+                    write_json(data, cache_file)
+                except FileNotFoundError:
+                    logging.warning('Unable to write cache file: %s', cache_file)
             return data
         return wrapper
     return decorator
