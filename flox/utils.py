@@ -25,9 +25,9 @@ def cache(file_name:str, max_age=30, dir=gettempdir()):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            if not Path(dir).is_absolute():
-                dir = Path(gettempdir(), dir)
             cache_file = Path(dir, file_name)
+            if not Path(cache_file).is_absolute():
+                cache_file = Path(gettempdir(), cache_file)
             if cache_file.exists() and file_age(cache_file) < max_age and cache_file.stat().st_size != 0:
                 with open(cache_file, 'r', encoding='utf-8') as f:
                     try:
