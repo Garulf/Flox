@@ -166,12 +166,13 @@ class Flox(Launcher):
         webbrowser.open(url)
 
     def add_item(self, title:str, subtitle:str='', icon:str=None, method:Union[str, callable]=None, parameters:list=None, context:list=None, glyph:str=None, score:int=0, **kwargs):
+        icon = icon or self.icon
         if not Path(icon).is_absolute():
             icon = Path(self.plugindir, icon)
         item = {
             "Title": str(title),
             "SubTitle": str(subtitle),
-            "IcoPath": str(icon) or self.icon,
+            "IcoPath": str(icon),
             "ContextData": context,
             "Score": score,
             "JsonRPCAction": {}
