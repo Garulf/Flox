@@ -13,6 +13,7 @@ from functools import wraps
 from tempfile import gettempdir
 
 from .launcher import Launcher
+from .browser import Browser
 
 PLUGIN_MANIFEST = 'plugin.json'
 FLOW_API = 'Flow.Launcher'
