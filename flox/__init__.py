@@ -120,6 +120,7 @@ class Flox(Launcher):
         if lib:
             lib_path = os.path.join(self.plugindir, lib)
             sys.path.append(lib_path)
+        self.browser = Browser(self.app_settings)
 
     def _query(self, query):
         try:
@@ -356,7 +357,7 @@ class Flox(Launcher):
         return self._settings
 
     def browser_open(self, url):
-        webbrowser.open(url)
+        self.browser.open(url)
 
 class Settings(dict):
 
