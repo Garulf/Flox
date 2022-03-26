@@ -14,7 +14,7 @@ NEW_WINDOW_ARG = "--new-window"
 
 CHROME_PATH = r"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe"
 FIREFOX_PATH = r"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\firefox.exe"
-MSEDGE_PATH = r"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\msedge.ex"
+MSEDGE_PATH = r"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\msedge.exe"
 DEFAULT_BROWSER_PATH = r"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice"
 
 DEFAULT_BROWSERS = {
