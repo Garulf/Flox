@@ -121,6 +121,7 @@ class Flox(Launcher):
             lib_path = os.path.join(self.plugindir, lib)
             sys.path.append(lib_path)
         self.browser = Browser(self.app_settings)
+        self._python_dir = None
 
     def _query(self, query):
         try:
@@ -358,6 +359,12 @@ class Flox(Launcher):
 
     def browser_open(self, url):
         self.browser.open(url)
+
+    @property
+    def python_dir(self):
+        if self._python_dir is None:
+            self._python_dir = self.app_settings["PluginSettings"]["PythonDirectory"]
+        return self._python_dir
 
 class Settings(dict):
 
