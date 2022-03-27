@@ -1,6 +1,6 @@
 # FLOX
 
-FLox is a Python library to help build Flow Launcher and Wox plugins
+Flox is a Python library to help build Flow Launcher and Wox plugins
 
 Flox adds many useful methods to speed up plugin devolpment
 
