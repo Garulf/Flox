@@ -33,3 +33,5 @@ jobs:
   publish:
     needs: release
     uses: ./.github/workflows/python-publish.yml
+    secrets:
+      PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN}}
