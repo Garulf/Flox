@@ -9,7 +9,7 @@ import logging
 import logging.handlers
 from pathlib import Path
 from typing import Union
-from functools import wraps
+from functools import wraps, cached_property
 from tempfile import gettempdir
 
 from .launcher import Launcher
@@ -101,18 +101,10 @@ class Flox(Launcher):
 
     def init(self, lib=None):
         self._debug = False
-        self._start = time.time()
-        self._api = None
-        self._manifest = None
-        self._results = []
-        self._plugindir = None
-        self._appdata = None
         self.appdir = APP_DIR
-        self._app_settings = None
-        self._user_keywords = None
-        self._appversion = None
+        self._start = time.time()
+        self._results = []
         self.except_results = False
-        self._settings_path = None
         self._settings = None
         self._logger = None
         self.logger
@@ -121,7 +113,6 @@ class Flox(Launcher):
             lib_path = os.path.join(self.plugindir, lib)
             sys.path.append(lib_path)
         self.browser = Browser(self.app_settings)
-        self._python_dir = None
 
     def _query(self, query):
         try:
@@ -199,79 +190,63 @@ class Flox(Launcher):
         self._results.append(item)
         return self._results[-1]
 
-    @property
+    @cached_property
     def plugindir(self):
+        potential_paths = [
+            os.path.abspath(os.getcwd()),
+            os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+        ]
 
-        if not self._plugindir:
-            potential_paths = [
-                os.path.abspath(os.getcwd()),
-                os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
-            ]
+        for path in potential_paths:
 
-            for path in potential_paths:
+            while True:
+                if os.path.exists(os.path.join(path, PLUGIN_MANIFEST)):
+                    return path
+                elif os.path.ismount(path):
+                    return os.getcwd()
 
-                while True:
-                    if os.path.exists(os.path.join(path, PLUGIN_MANIFEST)):
-                        self._plugindir = path
-                        break
-                    elif os.path.ismount(path):
-                        self._plugindir = os.getcwd()
-                        break
+                path = os.path.dirname(path)
 
-                    path = os.path.dirname(path)
-
-                if self._plugindir:
-                    break
-
-        return self._plugindir
-
-    @property
+    @cached_property
     def manifest(self):
-        if not self._manifest:
-            with open(os.path.join(self.plugindir, PLUGIN_MANIFEST), 'r') as f:
-                self._manifest = json.load(f)
-        return self._manifest
+        with open(os.path.join(self.plugindir, PLUGIN_MANIFEST), 'r') as f:
+            return json.load(f)
 
-    @property
+    @cached_property
     def id(self):
         return self.manifest['ID']
 
-    @property
+    @cached_property
     def icon(self):
         return self.manifest['IcoPath']
 
-    @property
+    @cached_property
     def action_keyword(self):
         return self.manifest['ActionKeyword']
 
-    @property
+    @cached_property
     def version(self):
         return self.manifest['Version']
 
-    @property
+    @cached_property
     def appdata(self):
-        if not self._appdata:
-            # Userdata should be up two directories from plugin root
-            self._appdata = os.path.dirname(os.path.dirname(self.plugindir))
-        return self._appdata
+        # Userdata should be up two directories from plugin root
+        return os.path.dirname(os.path.dirname(self.plugindir))
 
     @property
     def app_settings(self):
-        if not self._app_settings:
-            with open(os.path.join(self.appdata, 'Settings', 'Settings.json'), 'r') as f:
-                self._app_settings = json.load(f)
-        return self._app_settings
+        with open(os.path.join(self.appdata, 'Settings', 'Settings.json'), 'r') as f:
+            return json.load(f)
 
-    @property
+    @cached_property
     def user_keywords(self):
-        if not self._user_keywords:
-            self._user_keywords = self.app_settings['PluginSettings']['Plugins'].get(self.id, {}).get('UserKeywords', [self.action_keyword])
-        return self._user_keywords
+        return self.app_settings['PluginSettings']['Plugins'].get(self.id, {}).get('UserKeywords', [self.action_keyword])
 
-    @property
+    @cached_property
     def user_keyword(self):
         return self.user_keywords[0]
 
+    @cached_property
     def appicon(self, icon):
         return os.path.join(self.appdir, 'images', icon + '.png')
 
@@ -282,33 +257,29 @@ class Flox(Launcher):
         return os.path.join(self.appdata, 'Logs', self.appversion, file)
 
     
-    @property
+    @cached_property
     def appversion(self):
-        if not self._appversion:
-            self._appversion = os.path.basename(self.appdir).replace('app-', '')
-        return self._appversion
+        return os.path.basename(self.appdir).replace('app-', '')
 
-    @property
+    @cached_property
     def logfile(self):
         file = "plugin.log"
         return os.path.join(self.plugindir, file)
 
-    @property
+    @cached_property
     def logger(self):
-        if not self._logger:
-            logger = logging.getLogger('')
-            formatter = logging.Formatter(
-                '%(asctime)s %(levelname)s (%(filename)s): %(message)s',
-                datefmt='%H:%M:%S')
-            logfile = logging.handlers.RotatingFileHandler(
-                    self.logfile,
-                    maxBytes=1024 * 2024,
-                    backupCount=1)
-            logfile.setFormatter(formatter)
-            logger.addHandler(logfile)
-            logger.setLevel(logging.WARNING)
-            self._logger = logger
-        return self._logger
+        logger = logging.getLogger('')
+        formatter = logging.Formatter(
+            '%(asctime)s %(levelname)s (%(filename)s): %(message)s',
+            datefmt='%H:%M:%S')
+        logfile = logging.handlers.RotatingFileHandler(
+                self.logfile,
+                maxBytes=1024 * 2024,
+                backupCount=1)
+        logfile.setFormatter(formatter)
+        logger.addHandler(logfile)
+        logger.setLevel(logging.WARNING)
+        return logger
 
     def logger_level(self, level):
         if level == "info":
@@ -322,31 +293,27 @@ class Flox(Launcher):
         elif level == "critical":
             self.logger.setLevel(logging.CRITICAL)
 
-    @property
+    @cached_property
     def api(self):
-        if not self._api:
-            launcher = os.path.basename(os.path.dirname(self.appdir))
-            if launcher == 'FlowLauncher':
-                self._api = FLOW_API
-            else:
-                self._api = WOX_API
-        return self._api
+        launcher = os.path.basename(os.path.dirname(self.appdir))
+        if launcher == 'FlowLauncher':
+            return FLOW_API
+        else:
+            return WOX_API
 
-    @property
+    @cached_property
     def name(self):
         return self.manifest['Name']
 
-    @property
+    @cached_property
     def author(self):
         return self.manifest['Author']
 
-    @property
+    @cached_property
     def settings_path(self):
-        if self._settings_path is None:
-            dirname = self.name
-            setting_file = "Settings.json"
-            self._settings_path = os.path.join(self.appdata, 'Settings', 'Plugins', dirname, setting_file)
-        return self._settings_path
+        dirname = self.name
+        setting_file = "Settings.json"
+        return os.path.join(self.appdata, 'Settings', 'Plugins', dirname, setting_file)
 
     @property
     def settings(self):
@@ -360,11 +327,9 @@ class Flox(Launcher):
     def browser_open(self, url):
         self.browser.open(url)
 
-    @property
+    @cached_property
     def python_dir(self):
-        if self._python_dir is None:
-            self._python_dir = self.app_settings["PluginSettings"]["PythonDirectory"]
-        return self._python_dir
+        return self.app_settings["PluginSettings"]["PythonDirectory"]
 
 class Settings(dict):
 
