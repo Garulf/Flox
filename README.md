@@ -1,3 +1,4 @@
+[![Release](https://github.com/Garulf/Flox/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/Garulf/Flox/actions/workflows/release.yml)
 # FLOX
 
 Flox is a Python library to help build Flow Launcher and Wox plugins
