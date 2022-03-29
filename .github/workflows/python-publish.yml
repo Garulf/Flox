@@ -10,6 +10,9 @@ name: Upload Python Package
 
 on:
   workflow_call:
+    secrets:
+      PYPI_API_TOKEN:
+        required: true
   workflow_dispatch:
   release:
     types: [created]
