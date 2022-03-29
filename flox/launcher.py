@@ -20,6 +20,7 @@ class Launcher(object):
 
         if 'settings' in self.rpc_request.keys():
             self._settings = self.rpc_request['settings']
+            self.logger.debug('Loaded settings from RPC request')
         if not self._debug:
             self._debug = self.settings.get('debug', False)
         if self._debug:
