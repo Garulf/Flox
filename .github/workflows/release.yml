@@ -30,3 +30,8 @@ jobs:
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  publish:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: ./.github/workflows/python-publish
