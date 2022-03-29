@@ -93,20 +93,6 @@ class Flox(Launcher):
     def call(self):
         self.__call__()
 
-    def init(self, lib=None):
-        self._debug = False
-        self.appdir = APP_DIR
-        self._start = time.time()
-        self._results = []
-        self.except_results = False
-        self._settings = None
-        self._logger = None
-        self.logger
-        self.font_family = '/Resources/#Segoe Fluent Icons'
-        if lib:
-            lib_path = os.path.join(self.plugindir, lib)
-            sys.path.append(lib_path)
-        self.browser = Browser(self.app_settings)
 
     def _query(self, query):
         try:
