@@ -40,7 +40,7 @@ class Launcher(object):
 
         request_method = getattr(self, request_method_name)
         try:
-            results = request_method(*request_parameters)
+            results = request_method(*request_parameters) or self._results
         except Exception as e:
             try:
                 self.logger.exception(f'Exception while calling method: {request_method_name}')
