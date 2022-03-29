@@ -12,7 +12,8 @@ class Launcher(object):
     Launcher python plugin base
     """
 
-    def __init__(self, API):
+    def __init__(self):
+
         self.rpc_request = {'method': 'query', 'parameters': ['']}
         if len(sys.argv) > 1:
             self.rpc_request = json.loads(sys.argv[1])
