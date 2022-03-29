@@ -87,12 +87,6 @@ ICON_WORK = os.path.join(APP_ICONS, 'work.png')
 
 class Flox(Launcher):
 
-    def __init__(self, lib=None, **kwargs):
-        self.init()
-        self._debug = kwargs.pop('debug', False)
-        super().__init__(self.api)
-
-
     def __call__(self):
         return super().__call__()
 
