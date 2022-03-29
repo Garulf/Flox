@@ -306,14 +306,11 @@ class Flox(Launcher):
         setting_file = "Settings.json"
         return os.path.join(self.appdata, 'Settings', 'Plugins', dirname, setting_file)
 
-    @property
+    @cached_property
     def settings(self):
-        if self._settings is None:
-
-            if not os.path.exists(os.path.dirname(self.settings_path)):
-                os.mkdir(os.path.dirname(self.settings_path))
-            self._settings = Settings(self.settings_path)
-        return self._settings
+        if not os.path.exists(os.path.dirname(self.settings_path)):
+            os.mkdir(os.path.dirname(self.settings_path))
+        return Settings(self.settings_path)
 
     def browser_open(self, url):
         self.browser.open(url)
