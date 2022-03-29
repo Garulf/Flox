@@ -125,7 +125,6 @@ class Flox(Launcher):
                 self._add_except(e)
             else:
                 raise
-        return self._results
 
     def _context_menu(self, data):
         try:
