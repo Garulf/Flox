@@ -108,32 +108,17 @@ class Flox(Launcher):
     def browser(self):
         return Browser(self.app_settings)
 
-    def _query(self, query):
-        try:
-            self.args = query.lower()
     def exception(self, exception):
         self.exception_item(exception)
         self.issue_item(exception)
 
-            self.query(query)
+    def _query(self, query):
+        self.args = query.lower()
 
-        except Exception as e:
-            if self.except_results:
-                self._add_except(e)
-            else:
-                raise
+        self.query(query)
 
     def _context_menu(self, data):
-        try:
-
-            self.context_menu(data)
-
-        except Exception as e:
-            if self.except_results:
-                self._add_except(e)
-            else:
-                raise
-        return self._results
+        self.context_menu(data)
 
     def exception_item(self, exception):
         self.add_item(
