@@ -72,6 +72,12 @@ class Launcher(object):
         """
         return []
 
+    def exception(self, exception):
+        """
+        exception handler
+        """
+        return []
+
     def debug(self,msg):
         """
         alert msg
