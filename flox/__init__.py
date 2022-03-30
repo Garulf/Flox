@@ -131,11 +131,12 @@ class Flox(Launcher):
 
     def exception_item(self, exception):
         self.add_item(
-            title=e.__class__.__name__,
-            subtitle=str(e),
+            title=exception.__class__.__name__,
+            subtitle=str(exception),
             icon=ICON_APP_ERROR,
-            method='github_issue',
-            parameters=[e.__class__.__name__]
+            method=self.change_query,
+            dont_hide=True
+        )
         )
 
     def github_issue(self, title, log=None):
