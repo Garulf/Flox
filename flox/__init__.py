@@ -111,6 +111,9 @@ class Flox(Launcher):
     def _query(self, query):
         try:
             self.args = query.lower()
+    def exception(self, exception):
+        self.exception_item(exception)
+        self.issue_item(exception)
 
             self.query(query)
 
