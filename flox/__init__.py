@@ -1,4 +1,5 @@
 import sys
+import traceback
 import os
 import json
 import time
@@ -100,6 +101,8 @@ class Flox(Launcher):
         cls._results = []
         cls._settings = None
         cls.font_family = '/Resources/#Segoe Fluent Icons'
+        cls.issue_item_title = 'Report Issue'
+        cls.issue_item_subtitle = 'Report this issue to the developer'
 
     @cached_property
     def browser(self):
@@ -137,6 +140,15 @@ class Flox(Launcher):
             method=self.change_query,
             dont_hide=True
         )
+
+    def issue_item(self, e):
+        trace = ''.join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)).replace('\n', '%0A')
+        self.add_item(
+            title=self.issue_item_title,
+            subtitle=self.issue_item_subtitle,
+            icon=ICON_BROWSER,
+            method=self.create_github_issue,
+            parameters=[e.__class__.__name__, trace],
         )
 
     def github_issue(self, title, log=None):
