@@ -129,7 +129,7 @@ class Flox(Launcher):
                 raise
         return self._results
 
-    def _add_except(self, e):
+    def exception_item(self, exception):
         self.add_item(
             title=e.__class__.__name__,
             subtitle=str(e),
