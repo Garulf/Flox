@@ -42,11 +42,8 @@ class Launcher(object):
         try:
             results = request_method(*request_parameters) or self._results
         except Exception as e:
-            try:
-                self.logger.exception(f'Exception while calling method: {request_method_name}')
-            except AttributeError:
-                pass
-            raise
+            self.logger.exception(e)
+            results = self.exception(e) or self._results
         line_break = '#' * 10
         ms = int((time() - self._start) * 1000)
         self.logger.debug(f'{line_break} Total time: {ms}ms {line_break}')
