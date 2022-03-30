@@ -98,7 +98,6 @@ class Flox(Launcher):
         cls.appdir = APP_DIR
         cls._start = time.time()
         cls._results = []
-        cls.except_results = False
         cls._settings = None
         cls.font_family = '/Resources/#Segoe Fluent Icons'
 
