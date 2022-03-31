@@ -30,8 +30,10 @@ CURRENT_WORKING_DIR = Path().cwd()
 launcher_dir = None
 if str(FLOW_LAUNCHER_DIR_NAME) in CURRENT_WORKING_DIR.parts:
     launcher_dir = FLOW_LAUNCHER_DIR_NAME
+    API = FLOW_API
 elif str(WOX_DIR_NAME) in CURRENT_WORKING_DIR.parts:
     launcher_dir = WOX_DIR_NAME
+    API = WOX_API
 
 if str(APPDATA.joinpath(launcher_dir)) in str(CURRENT_WORKING_DIR):
     USER_DIR = APPDATA.joinpath(launcher_dir)
@@ -42,9 +44,11 @@ elif "UserData" in CURRENT_WORKING_DIR.parts:
 elif APPDATA.joinpath(FLOW_LAUNCHER_DIR_NAME).exits():
     USER_DIR = APPDATA.joinpath(FLOW_LAUNCHER_DIR_NAME)
     APP_DIR = LOCALAPPDATA.joinpath(FLOW_LAUNCHER_DIR_NAME)
+    API = FLOW_API
 elif APPDATA.joinpath(WOX_DIR_NAME).exits():
     USER_DIR = APPDATA.joinpath(WOX_DIR_NAME)
     APP_DIR = LOCALAPPDATA.joinpath(WOX_DIR_NAME)
+    API = WOX_API
 else:
     raise FileNotFoundError("Unable to locate Launcher directory")
     
@@ -100,10 +104,11 @@ class Flox(Launcher):
     def call(self):
         self.__call__()
 
-    def __init_subclass__(cls, app_dir=APP_DIR, user_dir=USER_DIR):
+    def __init_subclass__(cls, api=API, app_dir=APP_DIR, user_dir=USER_DIR):
         cls._debug = False
         cls.appdir = APP_DIR
         cls.user_dir = USER_DIR
+        cls.api = api
         cls._start = time.time()
         cls._results = []
         cls._settings = None
