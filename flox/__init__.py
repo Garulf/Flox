@@ -24,7 +24,6 @@ WOX_API = 'Wox'
 LOCALAPPDATA = Path(os.getenv('LOCALAPPDATA'))
 APPDATA = Path(os.getenv('APPDATA'))
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
-APP_DIR = ""
 
 if "UserData" in CWD.split(os.path.sep):
     idx = int(CWD.split(os.path.sep).index("UserData"))
