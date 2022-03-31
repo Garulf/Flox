@@ -17,6 +17,8 @@ from .launcher import Launcher
 from .browser import Browser
 
 PLUGIN_MANIFEST = 'plugin.json'
+FLOW_LAUNCHER_DIR_NAME = "FlowLauncher"
+WOX_DIR_NAME = "Wox"
 FLOW_API = 'Flow.Launcher'
 WOX_API = 'Wox'
 LOCALAPPDATA = os.getenv('LOCALAPPDATA')
