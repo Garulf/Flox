@@ -24,7 +24,6 @@ WOX_API = 'Wox'
 LOCALAPPDATA = Path(os.getenv('LOCALAPPDATA'))
 APPDATA = Path(os.getenv('APPDATA'))
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
-CWD = os.getcwd()
 APP_DIR = ""
 
 if "UserData" in CWD.split(os.path.sep):
@@ -33,6 +32,7 @@ if "UserData" in CWD.split(os.path.sep):
 elif "UserData" in FILE_PATH.split(os.path.sep):
     idx = int(FILE_PATH.split(os.path.sep).index("UserData"))
     APP_DIR = os.path.sep.join(FILE_PATH.split(os.path.sep)[:idx])
+CURRENT_WORKING_DIR = Path().cwd()
 else:
     _appdirs = os.listdir(os.path.join(LOCALAPPDATA, "FlowLauncher"))
     _versions = []
