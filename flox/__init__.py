@@ -100,9 +100,10 @@ class Flox(Launcher):
     def call(self):
         self.__call__()
 
-    def __init_subclass__(cls):
+    def __init_subclass__(cls, app_dir=APP_DIR, user_dir=USER_DIR):
         cls._debug = False
         cls.appdir = APP_DIR
+        cls.user_dir = USER_DIR
         cls._start = time.time()
         cls._results = []
         cls._settings = None
