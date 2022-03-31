@@ -24,25 +24,29 @@ WOX_API = 'Wox'
 LOCALAPPDATA = Path(os.getenv('LOCALAPPDATA'))
 APPDATA = Path(os.getenv('APPDATA'))
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
-
-if "UserData" in CWD.split(os.path.sep):
-    idx = int(CWD.split(os.path.sep).index("UserData"))
-    APP_DIR = os.path.sep.join(CWD.split(os.path.sep)[:idx])
-elif "UserData" in FILE_PATH.split(os.path.sep):
-    idx = int(FILE_PATH.split(os.path.sep).index("UserData"))
-    APP_DIR = os.path.sep.join(FILE_PATH.split(os.path.sep)[:idx])
 CURRENT_WORKING_DIR = Path().cwd()
+
+
+launcher_dir = None
+if str(FLOW_LAUNCHER_DIR_NAME) in CURRENT_WORKING_DIR.parts:
+    launcher_dir = FLOW_LAUNCHER_DIR_NAME
+elif str(WOX_DIR_NAME) in CURRENT_WORKING_DIR.parts:
+    launcher_dir = WOX_DIR_NAME
+
+if str(APPDATA.joinpath(launcher_dir)) in str(CURRENT_WORKING_DIR):
+    USER_DIR = APPDATA.joinpath(launcher_dir)
+    APP_DIR = LOCALAPPDATA.joinpath(launcher_dir)
+elif "UserData" in CURRENT_WORKING_DIR.parts:
+    USER_DIR = CURRENT_WORKING_DIR.parts[:-2]
+    APP_DIR = CURRENT_WORKING_DIR.parts[:-3]
+elif APPDATA.joinpath(FLOW_LAUNCHER_DIR_NAME).exits():
+    USER_DIR = APPDATA.joinpath(FLOW_LAUNCHER_DIR_NAME)
+    APP_DIR = LOCALAPPDATA.joinpath(FLOW_LAUNCHER_DIR_NAME)
+elif APPDATA.joinpath(WOX_DIR_NAME).exits():
+    USER_DIR = APPDATA.joinpath(WOX_DIR_NAME)
+    APP_DIR = LOCALAPPDATA.joinpath(WOX_DIR_NAME)
 else:
-    _appdirs = os.listdir(os.path.join(LOCALAPPDATA, "FlowLauncher"))
-    _versions = []
-    for dir in _appdirs:
-        if "app-" in dir:
-            _version = dir.split("app-")[1]
-            _version = tuple(map(int, (_version.split("."))))
-            _versions.append(_version)
-    _version = ".".join(map(str, max(_versions)))
-    _dir = f"app-{_version}"
-    APP_DIR = os.path.join(LOCALAPPDATA, "FlowLauncher", _dir )
+    raise FileNotFoundError("Unable to locate Launcher directory")
     
 
 APP_ICONS = os.path.join(APP_DIR, "Images")
