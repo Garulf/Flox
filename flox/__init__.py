@@ -321,3 +321,6 @@ class Flox(Launcher):
     @cached_property
     def python_dir(self):
         return self.app_settings["PluginSettings"]["PythonDirectory"]
+
+    def log(self):
+        return self.logger
