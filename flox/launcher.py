@@ -12,12 +12,15 @@ class Launcher(object):
     Launcher python plugin base
     """
 
-    def __init__(self):
+    def __call__(self, debug=None):
+        self.run(debug)
 
+    def run(self, debug=None):
+        if debug:
+            self._debug = debug
         self.rpc_request = {'method': 'query', 'parameters': ['']}
         if len(sys.argv) > 1:
             self.rpc_request = json.loads(sys.argv[1])
-
         if 'settings' in self.rpc_request.keys():
             self._settings = self.rpc_request['settings']
             self.logger.debug('Loaded settings from RPC request')
@@ -27,8 +30,6 @@ class Launcher(object):
             self.logger_level("debug")
         self.logger.debug(f'Request:\n{json.dumps(self.rpc_request, indent=4)}')
         self.logger.debug(f"Params: {self.rpc_request.get('parameters')}")
-
-    def __call__(self):
         # proxy is not working now
         # self.proxy = rpc_request.get("proxy",{})
         request_method_name = self.rpc_request.get("method")
@@ -53,9 +54,6 @@ class Launcher(object):
                 results['SettingsChange'] = self.settings
 
             print(json.dumps(results))
-
-    def __del__(self):
-        self.__call__()
 
     def query(self,query):
         """

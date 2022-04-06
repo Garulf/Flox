@@ -98,12 +98,6 @@ ICON_WORK = os.path.join(APP_ICONS, 'work.png')
 
 class Flox(Launcher):
 
-    def __call__(self):
-        return super().__call__()
-
-    def call(self):
-        self.__call__()
-
     def __init_subclass__(cls, api=API, app_dir=APP_DIR, user_dir=USER_DIR):
         cls._debug = False
         cls.appdir = APP_DIR
