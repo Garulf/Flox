@@ -1,0 +1,11 @@
+PLUGIN_MANIFEST = 'plugin.json'
+DEFAULT_GLYPH_FONTFAMILY = "/Resources/#Segoe Fluent Icons"
+FLOW_LAUNCHER_API_PREFIX = "Flow.Launcher"
+WOX_API_PREFIX = "wox"
+FLOW_LAUNCHER_DIR_NAME = "FlowLauncher"
+WOX_DIR_NAME = "Wox"
+DEFAULT_REPORT_TITLE = 'Report Issue'
+DEFAULT_REPORT_SUBTITLE = 'Report this issue to the developer'
+ZERO_WIDTH_SPACE = '​'
+INVIS_CHAR = ZERO_WIDTH_SPACE
+SPACE_CHAR = ' '
