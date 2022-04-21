@@ -12,7 +12,7 @@ class Launcher(object):
     Launcher python plugin base
     """
 
-    def __call__(self, debug=None):
+    def __init__(self, debug=None):
         self.run(debug)
 
     def run(self, debug=None):
