@@ -148,7 +148,7 @@ class Flox(Launcher):
         )
 
     def issue_item(self, e):
-        trace = ''.join(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)).replace('\n', '%0A')
+        trace = ''.join(traceback.format_exception(type(e), value=e, tb=e.__traceback__)).replace('\n', '%0A')
         self.add_item(
             title=self.issue_item_title,
             subtitle=self.issue_item_subtitle,
