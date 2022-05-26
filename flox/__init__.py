@@ -63,7 +63,7 @@ for dir in app_versions:
         _versions.append(_version)
 _version = ".".join(map(str, max(_versions)))
 _dir = f"app-{_version}"
-APP_DIR = LOCALAPPDATA.joinpath(launcher_dir, _dir )
+APP_DIR = LOCALAPPDATA.joinpath(launcher_dir, _dir)
 
 APP_ICONS = APP_DIR.joinpath("Images")
 ICON_APP = APP_DIR.joinpath('app.png')
