@@ -22,6 +22,7 @@ FLOW_LAUNCHER_DIR_NAME = "FlowLauncher"
 WOX_DIR_NAME = "Wox"
 FLOW_API = 'Flow.Launcher'
 WOX_API = 'Wox'
+APP_DIR = None
 LOCALAPPDATA = Path(os.getenv('LOCALAPPDATA'))
 APPDATA = Path(os.getenv('APPDATA'))
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -40,8 +41,9 @@ if str(APPDATA.joinpath(launcher_dir)) in str(CURRENT_WORKING_DIR):
     USER_DIR = APPDATA.joinpath(launcher_dir)
     LOCAL_APP_DIR = LOCALAPPDATA.joinpath(launcher_dir)
 elif "UserData" in CURRENT_WORKING_DIR.parts:
-    USER_DIR = CURRENT_WORKING_DIR.parts[:-2]
-    LOCAL_APP_DIR = CURRENT_WORKING_DIR.parts[:-3]
+    USER_DIR = Path(*CURRENT_WORKING_DIR.parts[:-2])
+    APP_DIR = Path(*CURRENT_WORKING_DIR.parts[:-3])
+    LOCAL_APP_DIR = Path(*CURRENT_WORKING_DIR.parts[:-4])
 elif APPDATA.joinpath(FLOW_LAUNCHER_DIR_NAME).exits():
     USER_DIR = APPDATA.joinpath(FLOW_LAUNCHER_DIR_NAME)
     LOCAL_APP_DIR = LOCALAPPDATA.joinpath(FLOW_LAUNCHER_DIR_NAME)
@@ -52,18 +54,19 @@ elif APPDATA.joinpath(WOX_DIR_NAME).exits():
     API = WOX_API
 else:
     raise FileNotFoundError("Unable to locate Launcher directory")
-    
-app_versions = LOCAL_APP_DIR.iterdir()
-_versions = []
-for dir in app_versions:
-    dir = str(dir)
-    if "app-" in dir:
-        _version = dir.split("app-")[1]
-        _version = tuple(map(int, (_version.split("."))))
-        _versions.append(_version)
-_version = ".".join(map(str, max(_versions)))
-_dir = f"app-{_version}"
-APP_DIR = LOCALAPPDATA.joinpath(launcher_dir, _dir)
+
+if APP_DIR is None:
+    app_versions = LOCAL_APP_DIR.iterdir()
+    _versions = []
+    for dir in app_versions:
+        dir = str(dir)
+        if "app-" in dir:
+            _version = dir.split("app-")[1]
+            _version = tuple(map(int, (_version.split("."))))
+            _versions.append(_version)
+    _version = ".".join(map(str, max(_versions)))
+    _dir = f"app-{_version}"
+    APP_DIR = LOCALAPPDATA.joinpath(launcher_dir, _dir)
 
 APP_ICONS = APP_DIR.joinpath("Images")
 ICON_APP = APP_DIR.joinpath('app.png')
