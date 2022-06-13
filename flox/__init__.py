@@ -44,11 +44,11 @@ elif "UserData" in CURRENT_WORKING_DIR.parts:
     USER_DIR = Path(*CURRENT_WORKING_DIR.parts[:-2])
     APP_DIR = Path(*CURRENT_WORKING_DIR.parts[:-3])
     LOCAL_APP_DIR = Path(*CURRENT_WORKING_DIR.parts[:-4])
-elif APPDATA.joinpath(FLOW_LAUNCHER_DIR_NAME).exits():
+elif APPDATA.joinpath(FLOW_LAUNCHER_DIR_NAME).exists():
     USER_DIR = APPDATA.joinpath(FLOW_LAUNCHER_DIR_NAME)
     LOCAL_APP_DIR = LOCALAPPDATA.joinpath(FLOW_LAUNCHER_DIR_NAME)
     API = FLOW_API
-elif APPDATA.joinpath(WOX_DIR_NAME).exits():
+elif APPDATA.joinpath(WOX_DIR_NAME).exists():
     USER_DIR = APPDATA.joinpath(WOX_DIR_NAME)
     LOCAL_APP_DIR = LOCALAPPDATA.joinpath(WOX_DIR_NAME)
     API = WOX_API
