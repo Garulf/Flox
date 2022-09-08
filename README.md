@@ -3,7 +3,7 @@
 
 Flox is a Python library to help build Flow Launcher and Wox plugins
 
-Flox adds many useful methods to speed up plugin devolpment
+Flox adds many useful methods to speed up plugin development
 
 Heavily inspired from the great work done by deanishe at: [deanishe/alfred-workflow](https://github.com/deanishe/alfred-workflow)
 
