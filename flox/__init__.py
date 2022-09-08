@@ -19,10 +19,12 @@ from .settings import Settings
 
 PLUGIN_MANIFEST = 'plugin.json'
 FLOW_LAUNCHER_DIR_NAME = "FlowLauncher"
+SCOOP_FLOW_LAUNCHER_DIR_NAME = "flow-launcher"
 WOX_DIR_NAME = "Wox"
 FLOW_API = 'Flow.Launcher'
 WOX_API = 'Wox'
 APP_DIR = None
+USER_DIR = None
 LOCALAPPDATA = Path(os.getenv('LOCALAPPDATA'))
 APPDATA = Path(os.getenv('APPDATA'))
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -30,43 +32,33 @@ CURRENT_WORKING_DIR = Path().cwd()
 
 
 launcher_dir = None
-if str(FLOW_LAUNCHER_DIR_NAME) in CURRENT_WORKING_DIR.parts:
-    launcher_dir = FLOW_LAUNCHER_DIR_NAME
+path = CURRENT_WORKING_DIR
+if SCOOP_FLOW_LAUNCHER_DIR_NAME in path.parts:
+    launcher_name = SCOOP_FLOW_LAUNCHER_DIR_NAME
     API = FLOW_API
-elif str(WOX_DIR_NAME) in CURRENT_WORKING_DIR.parts:
-    launcher_dir = WOX_DIR_NAME
-    API = WOX_API
-
-if str(APPDATA.joinpath(launcher_dir)) in str(CURRENT_WORKING_DIR):
-    USER_DIR = APPDATA.joinpath(launcher_dir)
-    LOCAL_APP_DIR = LOCALAPPDATA.joinpath(launcher_dir)
-elif "UserData" in CURRENT_WORKING_DIR.parts:
-    USER_DIR = Path(*CURRENT_WORKING_DIR.parts[:-2])
-    APP_DIR = Path(*CURRENT_WORKING_DIR.parts[:-3])
-    LOCAL_APP_DIR = Path(*CURRENT_WORKING_DIR.parts[:-4])
-elif APPDATA.joinpath(FLOW_LAUNCHER_DIR_NAME).exists():
-    USER_DIR = APPDATA.joinpath(FLOW_LAUNCHER_DIR_NAME)
-    LOCAL_APP_DIR = LOCALAPPDATA.joinpath(FLOW_LAUNCHER_DIR_NAME)
+elif FLOW_LAUNCHER_DIR_NAME in path.parts:
+    launcher_name = FLOW_LAUNCHER_DIR_NAME
     API = FLOW_API
-elif APPDATA.joinpath(WOX_DIR_NAME).exists():
-    USER_DIR = APPDATA.joinpath(WOX_DIR_NAME)
-    LOCAL_APP_DIR = LOCALAPPDATA.joinpath(WOX_DIR_NAME)
+elif WOX_DIR_NAME in path.parts:
+    launcher_name = WOX_DIR_NAME
     API = WOX_API
 else:
     raise FileNotFoundError("Unable to locate Launcher directory")
 
-if APP_DIR is None:
-    app_versions = LOCAL_APP_DIR.iterdir()
-    _versions = []
-    for dir in app_versions:
-        dir = str(dir)
-        if "app-" in dir:
-            _version = dir.split("app-")[1]
-            _version = tuple(map(int, (_version.split("."))))
-            _versions.append(_version)
-    _version = ".".join(map(str, max(_versions)))
-    _dir = f"app-{_version}"
-    APP_DIR = LOCALAPPDATA.joinpath(launcher_dir, _dir)
+while True:
+    if len(path.parts) == 1:
+        raise FileNotFoundError("Unable to locate Launcher directory")
+    if path.joinpath('Settings').exists():
+        USER_DIR = path
+        if USER_DIR.name == 'UserData':
+            APP_DIR = USER_DIR.parent
+        elif str(CURRENT_WORKING_DIR).startswith(str(APPDATA)):
+            APP_DIR = LOCALAPPDATA.joinpath(launcher_name)
+        else:
+            raise FileNotFoundError("Unable to locate Launcher directory")
+        break
+
+    path = path.parent
 
 APP_ICONS = APP_DIR.joinpath("Images")
 ICON_APP = APP_DIR.joinpath('app.png')
