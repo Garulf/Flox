@@ -33,13 +33,13 @@ CURRENT_WORKING_DIR = Path().cwd()
 
 launcher_dir = None
 path = CURRENT_WORKING_DIR
-if SCOOP_FLOW_LAUNCHER_DIR_NAME in path.parts:
+if SCOOP_FLOW_LAUNCHER_DIR_NAME.lower() in str(path).lower():
     launcher_name = SCOOP_FLOW_LAUNCHER_DIR_NAME
     API = FLOW_API
-elif FLOW_LAUNCHER_DIR_NAME in path.parts:
+elif FLOW_LAUNCHER_DIR_NAME.lower() in str(path).lower():
     launcher_name = FLOW_LAUNCHER_DIR_NAME
     API = FLOW_API
-elif WOX_DIR_NAME in path.parts:
+elif WOX_DIR_NAME.lower() in str(path).lower():
     launcher_name = WOX_DIR_NAME
     API = WOX_API
 else:
