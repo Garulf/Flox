@@ -238,6 +238,10 @@ class Flox(Launcher):
         with open(os.path.join(self.appdata, 'Settings', 'Settings.json'), 'r') as f:
             return json.load(f)
 
+    @property
+    def query_search_precision(self):
+        return self.app_settings['QuerySearchPrecision']
+
     @cached_property
     def user_keywords(self):
         return self.app_settings['PluginSettings']['Plugins'].get(self.id, {}).get('UserKeywords', [self.action_keyword])

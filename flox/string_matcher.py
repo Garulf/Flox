@@ -2,7 +2,12 @@ from dataclasses import dataclass, field
 from typing import List
 
 SPACE_CHAR: str = ' '
-USER_SEARCH_PRECISION = 50
+QUERY_SEARCH_PRECISION = {
+    'Regular': 50,
+    'Low': 20,
+    'None': 0
+}
+DEFAULT_QUERY_SEARCH_PRECISION = QUERY_SEARCH_PRECISION['Regular']
 
 """
 This is a python copy of Flow Launcher's string matcher.
@@ -14,15 +19,15 @@ I take no credit for the algorithm, I just translated it to python.
 class MatchData:
     """Match data"""
     matched: bool
-    score_cutoff: int = USER_SEARCH_PRECISION
+    score_cutoff: int
     index_list: List[int] = field(default_factory=list)
     score: int = 0
 
 
-def string_matcher(query: str, text: str, ignore_case: bool = True) -> MatchData:
+def string_matcher(query: str, text: str, ignore_case: bool = True, query_search_precision: int = DEFAULT_QUERY_SEARCH_PRECISION) -> MatchData:
     """Compare query to text"""
     if not text or not query:
-        return False
+        return MatchData(False, query_search_precision)
 
     query = query.strip()
 
@@ -112,8 +117,8 @@ def string_matcher(query: str, text: str, ignore_case: bool = True) -> MatchData
     if acronyms_matched > 0 and acronyms_matched == len(query):
         acronyms_score: int = acronyms_matched * 100 / acronyms_total_count
 
-        if acronyms_score >= USER_SEARCH_PRECISION:
-            return MatchData(True, USER_SEARCH_PRECISION, acronym_match_data, acronyms_score)
+        if acronyms_score >= query_search_precision:
+            return MatchData(True, query_search_precision, acronym_match_data, acronyms_score)
 
     if all_query_substrings_matched:
 
@@ -123,9 +128,9 @@ def string_matcher(query: str, text: str, ignore_case: bool = True) -> MatchData
         score = calculate_search_score(query, text, first_match_index - nearest_space_index - 1,
                                        space_indices, last_match_index - first_match_index, all_substrings_contained_in_text)
 
-        return MatchData(True, USER_SEARCH_PRECISION, index_list, score)
+        return MatchData(True, query_search_precision, index_list, score)
 
-    return MatchData(False, USER_SEARCH_PRECISION)
+    return MatchData(False, query_search_precision)
 
 
 def calculate_search_score(query: str, text: str, first_index: int, space_indices: List[int], match_length: int, all_substrings_contained_in_text: bool):
