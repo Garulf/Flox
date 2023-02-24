@@ -29,6 +29,7 @@ LOCALAPPDATA = Path(os.getenv('LOCALAPPDATA'))
 APPDATA = Path(os.getenv('APPDATA'))
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 CURRENT_WORKING_DIR = Path().cwd()
+LAUNCHER_NOT_FOUND_MSG = f"Unable to locate Launcher directory\nCurrent working directory: {CURRENT_WORKING_DIR}"
 
 
 launcher_dir = None
@@ -43,11 +44,11 @@ elif WOX_DIR_NAME.lower() in str(path).lower():
     launcher_name = WOX_DIR_NAME
     API = WOX_API
 else:
-    raise FileNotFoundError("Unable to locate Launcher directory")
+    raise FileNotFoundError(LAUNCHER_NOT_FOUND_MSG)
 
 while True:
     if len(path.parts) == 1:
-        raise FileNotFoundError("Unable to locate Launcher directory")
+        raise FileNotFoundError(LAUNCHER_NOT_FOUND_MSG)
     if path.joinpath('Settings').exists():
         USER_DIR = path
         if USER_DIR.name == 'UserData':
@@ -55,7 +56,7 @@ while True:
         elif str(CURRENT_WORKING_DIR).startswith(str(APPDATA)):
             APP_DIR = LOCALAPPDATA.joinpath(launcher_name)
         else:
-            raise FileNotFoundError("Unable to locate Launcher directory")
+            raise FileNotFoundError(LAUNCHER_NOT_FOUND_MSG)
         break
 
     path = path.parent
