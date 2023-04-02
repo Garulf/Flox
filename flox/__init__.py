@@ -236,7 +236,7 @@ class Flox(Launcher):
 
     @property
     def app_settings(self):
-        with open(os.path.join(self.appdata, 'Settings', 'Settings.json'), 'r') as f:
+        with open(os.path.join(self.appdata, 'Settings', 'Settings.json'), 'r', encoding='utf-8') as f:
             return json.load(f)
 
     @property
