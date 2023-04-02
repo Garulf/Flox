@@ -210,7 +210,7 @@ class Flox(Launcher):
 
     @cached_property
     def manifest(self):
-        with open(os.path.join(self.plugindir, PLUGIN_MANIFEST), 'r') as f:
+        with open(os.path.join(self.plugindir, PLUGIN_MANIFEST, encoding='utf-8'), 'r') as f:
             return json.load(f)
 
     @cached_property
