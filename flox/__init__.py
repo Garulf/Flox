@@ -16,7 +16,6 @@ from tempfile import gettempdir
 from .launcher import Launcher
 from .browser import Browser
 from .settings import Settings
-from .string_matcher import DEFAULT_QUERY_SEARCH_PRECISION
 
 PLUGIN_MANIFEST = 'plugin.json'
 FLOW_LAUNCHER_DIR_NAME = "FlowLauncher"
@@ -242,7 +241,7 @@ class Flox(Launcher):
 
     @property
     def query_search_precision(self):
-        return self.app_settings.get('QuerySearchPrecision', DEFAULT_QUERY_SEARCH_PRECISION)
+        return self.app_settings.get('QuerySearchPrecision', 'Regular')
 
     @cached_property
     def user_keywords(self):
