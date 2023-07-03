@@ -12,9 +12,6 @@ class Launcher(object):
     Launcher python plugin base
     """
 
-    def __del__(self, debug=None):
-        self.run(debug)
-
     def run(self, debug=None):
         if debug:
             self._debug = debug
