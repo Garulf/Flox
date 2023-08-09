@@ -46,5 +46,6 @@ class YourClass(Flox):
         )
 
 if __name__ == "__main__":
-    YourClass().run()
+    your_class = YourClass()
+    your_class.run()
 ```
