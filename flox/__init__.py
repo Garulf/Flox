@@ -322,6 +322,8 @@ class Flox(Launcher):
 
     @cached_property
     def settings(self):
+        if self._settings:
+            return self._settings
         if not os.path.exists(os.path.dirname(self.settings_path)):
             os.mkdir(os.path.dirname(self.settings_path))
         return Settings(self.settings_path)
