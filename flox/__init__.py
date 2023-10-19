@@ -28,7 +28,7 @@ USER_DIR = None
 LOCALAPPDATA = Path(os.getenv('LOCALAPPDATA'))
 APPDATA = Path(os.getenv('APPDATA'))
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
-CURRENT_WORKING_DIR = Path().cwd()
+CURRENT_WORKING_DIR = Path(sys.argv[0]).parent.resolve()
 LAUNCHER_NOT_FOUND_MSG = f"Unable to locate Launcher directory\nCurrent working directory: {CURRENT_WORKING_DIR}"
 
 
